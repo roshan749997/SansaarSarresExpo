@@ -11,7 +11,11 @@ const ProductList = ({ defaultCategory } = {}) => {
   const [error, setError] = useState(null);
 
   // Normalize slug -> friendly string (replace hyphens)
-  const normalize = (s) => (s ? s.replace(/-/g, ' ') : '');
+  const normalize = (s) => {
+    if (!s) return '';
+    const t = s.replace(/-/g, ' ').toLowerCase();
+    return t.replace(/\b\w/g, (c) => c.toUpperCase());
+  };
   // Prefer subCategoryName for filtering when present (most DBs store subcategory as the product category)
   const effectiveCategory = subCategoryName
     ? normalize(subCategoryName)
@@ -36,6 +40,11 @@ const ProductList = ({ defaultCategory } = {}) => {
     load();
   }, [categoryName, subCategoryName, defaultCategory]);
 
+  // Scroll to top whenever category changes so the heading/top section is visible
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [categoryName, subCategoryName]);
+
   const handleCardClick = (product) => {
     navigate(`/product/${product._id}`);
   };
@@ -57,18 +66,16 @@ const ProductList = ({ defaultCategory } = {}) => {
   }
 
   return (
-    <div className="min-h-screen bg-white pt-20 pb-10">
+    <div className="min-h-screen bg-white pt-6 pb-20">
       <div className="max-w-7xl mx-auto">
         {/* Heading */}
-        <div className="px-4 mb-6">
-          <h1 className="text-3xl font-serif font-bold text-gray-900">
-            {categoryName || defaultCategory ? (
-              <>
-                {normalize(categoryName || defaultCategory)}{subCategoryName ? ` • ${normalize(subCategoryName)}` : ''}
-              </>
-            ) : (
-              'All Sarees'
-            )}
+        <div className="px-4 mb-8">
+          <h1 className="text-3xl md:text-4xl font-semibold text-neutral-900 tracking-tight leading-tight text-center">
+            {subCategoryName
+              ? normalize(subCategoryName)
+              : (categoryName || defaultCategory
+                  ? normalize(categoryName || defaultCategory)
+                  : 'All Sarees')}
           </h1>
         </div>
         {products.length === 0 ? (

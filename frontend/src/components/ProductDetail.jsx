@@ -16,6 +16,7 @@ const ProductDetail = () => {
   const location = useLocation();
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     const loadSaree = async () => {
       try {
         setLoading(true);
@@ -93,14 +94,14 @@ const ProductDetail = () => {
   const sellingPrice = Math.round(saree.mrp - (saree.mrp * (saree.discountPercent || 0) / 100));
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 py-4">
 
-      <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-6">
+      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
           
           {/* Image Section */}
           <div className="w-full overflow-hidden rounded-xl bg-gray-50">
-            <div className="relative pt-[120%] overflow-hidden">
+            <div className="relative pt-[100%] md:pt-[90%] overflow-hidden">
               <img
                 src={saree.images?.image1 || 'https://via.placeholder.com/600x800?text=Image+Not+Available'}
                 alt={saree.title}
@@ -114,8 +115,8 @@ const ProductDetail = () => {
           </div>
 
           {/* Product Details */}
-          <div className="py-4 px-2">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">{saree.title}</h1>
+          <div className="py-2 px-2">
+            <h1 className="text-2xl font-bold text-gray-800 mb-2">{saree.title}</h1>
             
             <div className="flex items-center mb-4">
               <div className="flex text-yellow-400 mr-2">
@@ -126,14 +127,14 @@ const ProductDetail = () => {
               <span className="text-gray-500 text-sm">(24 Reviews)</span>
             </div>
 
-            <div className="flex items-center mb-6">
+            <div className="flex items-center mb-4">
               <div className="flex items-center">
                 <FaRupeeSign className="text-gray-700" />
-                <span className="text-3xl font-bold text-gray-900 ml-1">
+                <span className="text-2xl font-bold text-gray-900 ml-1">
                   {sellingPrice.toLocaleString()}
                 </span>
               </div>
-              <span className="text-gray-400 text-lg line-through ml-4">
+              <span className="text-gray-400 text-base line-through ml-4">
                 ₹{saree.mrp.toLocaleString()}
               </span>
               {saree.discountPercent > 0 && (
@@ -143,8 +144,8 @@ const ProductDetail = () => {
               )}
             </div>
 
-            <div className="mb-8">
-              <h3 className="text-lg font-semibold text-gray-800 mb-3">Description</h3>
+            <div className="mb-6">
+              <h3 className="text-base font-semibold text-gray-800 mb-2">Description</h3>
               <p className="text-gray-600 leading-relaxed mb-6">
                 {saree.description}
               </p>
@@ -170,9 +171,9 @@ const ProductDetail = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+              <div className="flex flex-col sm:flex-row gap-3 mb-6">
                 <button 
-                  className="flex-1 bg-white text-[#800020] py-3 px-6 rounded-lg flex items-center justify-center space-x-2 hover:bg-[#660019] hover:text-white transition-colors disabled:opacity-70 cursor-pointer shadow-sm border border-[#800020]"
+                  className="flex-1 bg-white text-[#800020] py-2.5 px-5 rounded-lg flex items-center justify-center space-x-2 hover:bg-[#660019] hover:text-white transition-colors disabled:opacity-70 cursor-pointer shadow-sm border border-[#800020]"
                   onClick={handleAddToCart}
                   disabled={isAdding}
                 >
@@ -180,7 +181,7 @@ const ProductDetail = () => {
                   <span className="font-medium">{isAdding ? 'Adding...' : 'Add to Cart'}</span>
                 </button>
                 <button 
-                  className="flex-1 bg-[#800020] text-white py-3 px-6 rounded-lg flex items-center justify-center space-x-2 hover:bg-[#660019] transition-colors cursor-pointer shadow-sm border border-[#800020]"
+                  className="flex-1 bg-[#800020] text-white py-2.5 px-5 rounded-lg flex items-center justify-center space-x-2 hover:bg-[#660019] transition-colors cursor-pointer shadow-sm border border-[#800020]"
                   onClick={handleBuyNow}
                 >
                   <FaBolt className="h-5 w-5" />
@@ -189,7 +190,7 @@ const ProductDetail = () => {
               </div>
               
               <div className="space-y-4">
-                <h4 className="text-xl font-semibold text-gray-800 border-b pb-2">Product Information</h4>
+                <h4 className="text-lg font-semibold text-gray-800 border-b pb-2">Product Information</h4>
                 <div className="space-y-3 text-gray-700">
                   <div className="flex">
                     <span className="w-36 font-medium text-gray-600">Brand:</span>

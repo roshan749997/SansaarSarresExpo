@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Collections = () => {
   const collections = [
@@ -45,6 +46,69 @@ const Collections = () => {
     { title: 'Geometric Printed Sarees', image: 'https://res.cloudinary.com/duc9svg7w/image/upload/v1761999983/unnamed_q6ef6r.jpg' },
   ];
 
+  const navigate = useNavigate();
+
+  // Map each card title to the exact route defined in Header.jsx
+  const pathByTitle = {
+    // Silk
+    'Soft Silk Sarees': '/category/silk/soft-silk',
+    'Kanjivaram Sarees': '/category/silk/kanjivaram',
+    'Banarasi Sarees': '/category/banarasi/banarasi-sarees',
+    'Maheshwari Silk': '/category/silk/maheshwari',
+    'Raw Silk Sarees': '/category/silk/raw-silk',
+    'Mysore Silk Sarees': '/category/silk/mysore-silk',
+    'Sambalpuri Sarees': '/category/silk/sambalpuri-sarees',
+    'Kalamkari Print Saree': '/category/silk/kalamkari-print-saree',
+
+    // Cotton
+    'Bengali Cotton Sarees': '/category/cotton/bengali-sarees',
+    'Maheshwari Cotton Sarees': '/category/cotton/maheshwari-cotton',
+    'Jaipur Cotton Sarees': '/category/cotton/jaipur-cotton',
+    'South Cotton Sarees': '/category/cotton/south-cotton-sarees',
+    'Office Wear Cotton Sarees': '/category/cotton/office-wear-sarees',
+    'Dr.Khadi Cotton Sarees': '/category/cotton/dr-khadi',
+    'Block Printed Cotton Sarees': '/category/cotton/block-printed-sarees',
+    'Bagru Print Cotton Sarees': '/category/cotton/bagru-print-sarees',
+    'Ajrakh Print Cotton Sarees': '/category/cotton/ajrakh-print-sarees',
+    'Ikkat Cotton Sarees': '/category/cotton/ikkat-sarees',
+    'Chanderi Cotton Silks': '/category/cotton/chanderi-cotton-silks',
+    'Kalamkari Cotton Sarees': '/category/cotton/kalamkari-sarees',
+
+    // Regional
+    'Sambalpuri Regional Sarees': '/category/regional/sambalpuri-sarees',
+    'Kanjivaram Regional Sarees': '/category/regional/kanjivaram-sarees',
+    'Bengali Regional Sarees': '/category/regional/bengali-sarees',
+    'Mysore Regional Sarees': '/category/regional/mysore-sarees',
+    'Maheshwari Regional Sarees': '/category/regional/maheshwari-sarees',
+    'Karnataka Regional Sarees': '/category/regional/karnataka-sarees',
+    'Tamilnadu Regional Sarees': '/category/regional/tamilnadu-sarees',
+    'Banarasi Regional Sarees': '/category/regional/banarasi-sarees',
+    'Banarasi Regional Dupatta': '/category/regional/banarasi-dupatta',
+
+    // Banarasi
+    'Banarasi Dupatta': '/category/banarasi/banarasi-dupatta',
+    'Banarasi Dress Material': '/category/banarasi/banarasi-dress-material',
+
+    // Designer Sarees
+    'Party Wear Saree': '/category/designer-sarees/party-wear',
+    'Wedding Sarees': '/category/designer-sarees/wedding',
+    'Festive Sarees': '/category/designer-sarees/festive',
+    'Bollywood Style Sarees': '/category/designer-sarees/bollywood-style',
+    'Heavy Embroidered Sarees': '/category/designer-sarees/heavy-embroidered',
+
+    // Printed Sarees
+    'Floral Printed Sarees': '/category/printed-sarees/floral',
+    'Digital Printed Sarees': '/category/printed-sarees/digital',
+    'Block Printed Sarees': '/category/printed-sarees/block',
+    'Abstract Printed Sarees': '/category/printed-sarees/abstract',
+    'Geometric Printed Sarees': '/category/printed-sarees/geometric',
+  };
+
+  const onCardClick = (title) => {
+    const path = pathByTitle[title];
+    if (path) navigate(path);
+  };
+
   return (
     <section className="py-16 px-4 bg-gradient-to-b from-gray-50 to-white">
       <div className="max-w-7xl mx-auto">
@@ -60,6 +124,7 @@ const Collections = () => {
             <div
               key={index}
               className="group relative bg-white overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 cursor-pointer border border-gray-100"
+              onClick={() => onCardClick(item.title)}
             >
               <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
                 <img 

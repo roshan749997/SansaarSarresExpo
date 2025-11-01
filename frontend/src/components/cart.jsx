@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaTrash, FaPlus, FaMinus, FaArrowLeft, FaShoppingCart } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
@@ -15,6 +15,10 @@ function Cart() {
   } = useCart();
 
   console.log('Cart component rendered with:', { cart, cartTotal, cartCount }); // Debug log
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
 
   const handleQuantityChange = (itemId, newQuantity) => {
     if (newQuantity < 1) {
