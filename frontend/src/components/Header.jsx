@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const [activeCategory, setActiveCategory] = useState(null);
   const headerRef = useRef(null);
+  const navigate = useNavigate();
 
   const categories = [
     { 
@@ -111,7 +112,7 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-20 z-40 bg-white border-t border-gray-200 shadow-sm">
+    <header className="sticky top-16 md:top-20 z-40 bg-white border-t border-gray-200 shadow-sm">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center justify-center space-x-8 py-3" ref={headerRef}>
@@ -168,20 +169,38 @@ const Header = () => {
         </div>
 
         {/* Mobile Navigation - Horizontal Scroll */}
-        <div className="md:hidden -mx-4">
+        <div className="md:hidden -mx-4 relative z-50">
           {/* Main Categories */}
-          <div className="flex space-x-2 overflow-x-auto px-4 pt-3 pb-2 hide-scrollbar">
+          <div className="flex space-x-1 overflow-x-auto px-4 pt-3 pb-2 hide-scrollbar sticky top-16 z-50 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/70 border-b border-gray-200">
             {categories.map((category) => (
               <div key={category.name} className="shrink-0">
                 <button
-                  onClick={(e) => handleClick(category.name, e)}
-                  className={`px-4 py-2 text-sm font-medium rounded-full transition-colors duration-200 whitespace-nowrap ${
+                  onClick={(e) => {
+                    // First tap opens subcategories, second tap navigates to the category page
+                    if (activeCategory === category.name) {
+                      setActiveCategory(null);
+                      navigate(category.path);
+                    } else {
+                      handleClick(category.name, e);
+                    }
+                  }}
+                  className={`px-4 py-2 text-sm font-medium transition-colors duration-200 whitespace-nowrap relative flex items-center ${
                     activeCategory === category.name 
-                      ? 'bg-rose-500 text-white shadow-md' 
-                      : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+                      ? 'text-rose-500 border-b-2 border-rose-500' 
+                      : 'text-gray-700 hover:text-rose-500 border-b-2 border-transparent'
                   }`}
                 >
                   {category.name}
+                  <svg
+                    className={`w-4 h-4 ml-1 transition-transform duration-200 ${
+                      activeCategory === category.name ? 'rotate-180' : ''
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
                 </button>
               </div>
             ))}
@@ -189,8 +208,8 @@ const Header = () => {
           
           {/* Subcategories */}
           {activeCategory && (
-            <div className="bg-white border-t border-gray-200 mt-2">
-              <div className="sticky top-0 z-10 bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between">
+            <div className="bg-white border-t border-gray-200 mt-2 z-50 relative">
+              <div className="sticky top-16 z-50 bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between">
                 <h3 className="text-sm font-medium text-gray-700">
                   {categories.find(cat => cat.name === activeCategory)?.name} Categories
                 </h3>
@@ -209,13 +228,19 @@ const Header = () => {
                     <Link
                       key={subcategory.name}
                       to={subcategory.path}
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         setActiveCategory(null);
-                        // Close mobile menu if needed
-                        if (window.innerWidth < 768) {
-                          const menu = document.getElementById('mobile-menu');
-                          if (menu) menu.classList.add('hidden');
-                        }
+                        navigate(subcategory.path);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      onTouchEnd={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setActiveCategory(null);
+                        navigate(subcategory.path);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
                       className="block px-6 py-3 text-sm text-gray-700 hover:text-rose-500 hover:bg-rose-50 transition-colors duration-200"
                     >

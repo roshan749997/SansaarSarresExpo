@@ -49,13 +49,7 @@ const ProductList = ({ defaultCategory } = {}) => {
     navigate(`/product/${product._id}`);
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <FaSpinner className="animate-spin text-4xl text-indigo-600" />
-      </div>
-    );
-  }
+  // No blocking loading screen; we keep showing current content
 
   if (error) {
     return (
@@ -67,6 +61,11 @@ const ProductList = ({ defaultCategory } = {}) => {
 
   return (
     <div className="min-h-screen bg-white pt-6 pb-20">
+      {loading && (
+        <div className="fixed left-0 right-0 top-[64px] md:top-[80px] z-50">
+          <div className="h-0.5 bg-gradient-to-r from-indigo-500 via-pink-500 to-amber-500 animate-pulse"></div>
+        </div>
+      )}
       <div className="max-w-7xl mx-auto">
         {/* Heading */}
         <div className="px-4 mb-8">

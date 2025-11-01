@@ -83,10 +83,10 @@ const Navbar = () => {
         isScrolled ? 'shadow-lg' : 'shadow-sm'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+      <div className="w-full px-0 sm:px-1 md:px-2 lg:px-3">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo/Brand */}
-          <Link to="/" className="flex-shrink-0">
+          <Link to="/" className="flex-shrink-0 ml-4 sm:ml-5 md:ml-6 lg:ml-8">
             <img 
               src="/src/assets/SareeLogo1.png" 
               alt="SareeSansaar Logo" 
@@ -94,13 +94,37 @@ const Navbar = () => {
             />
           </Link>
 
+          {/* Mobile Search (visible only on small screens) */}
+          <div className="flex-1 min-w-0 px-2 md:hidden">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyPress={handleSearchKeyPress}
+                className="w-full px-3 py-1.5 pl-9 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent"
+              />
+              <button
+                onClick={handleSearch}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-rose-500"
+                type="button"
+                aria-label="Search"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-4 lg:space-x-6 xl:space-x-8 ml-4 sm:ml-6 md:ml-8 lg:ml-12">
+          <div className="hidden xl:flex items-center space-x-2 xl:space-x-6 2xl:space-x-8 xl:ml-8 2xl:ml-12">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 to={link.path}
-                className="text-sm sm:text-base text-gray-700 hover:text-[#660019] font-medium transition-colors duration-200 relative group px-2 py-1"
+                className="text-sm sm:text-base text-gray-700 hover:text-[#660019] font-medium transition-colors duration-200 relative group px-0.5 py-1"
               >
                 {link.name}
                 <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-[#660019] to-amber-400 group-hover:w-[calc(100%-0.5rem)] transition-all duration-300"></span>
@@ -109,7 +133,7 @@ const Navbar = () => {
           </div>
 
           {/* Search Bar & Icons */}
-          <div className="hidden md:flex items-center space-x-2 sm:space-x-3 lg:space-x-4">
+          <div className="hidden md:flex items-center space-x-1 sm:space-x-2 lg:space-x-3 ml-auto">
             {/* Search Bar */}
             <div className="relative">
               <input
@@ -118,7 +142,7 @@ const Navbar = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={handleSearchKeyPress}
-                className="w-32 sm:w-40 md:w-48 lg:w-56 xl:w-64 px-3 sm:px-4 py-1.5 sm:py-2 pl-8 sm:pl-10 text-sm sm:text-base border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#660019] focus:border-transparent transition-all duration-200"
+                className="w-48 md:w-64 lg:w-80 xl:w-[40rem] px-2 sm:px-2 py-1.5 sm:py-2 pl-7 sm:pl-9 text-sm sm:text-base border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#660019] focus:border-transparent transition-all duration-200"
               />
               <button
                 onClick={handleSearch}
@@ -144,7 +168,7 @@ const Navbar = () => {
             {/* Cart Icon */}
             <Link
               to="/cart"
-              className="relative p-2text-[#800020] hover:text-[#660019] transition-colors duration-200"
+              className="relative p-2 text-[#800020] hover:text-[#660019] transition-colors duration-200"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -180,27 +204,109 @@ const Navbar = () => {
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="px-3 py-1 text-sm text-gray-700 hover:text-[#660019] transition-colors duration-200 border border-gray-300 rounded-md hover:border-rose-500"
+                  className="hidden xl:inline-flex px-3 py-1 text-sm text-gray-700 hover:text-[#660019] transition-colors duration-200 border border-gray-300 rounded-md hover:border-rose-500"
                 >
                   Logout
                 </button>
+                <button
+                  onClick={handleLogout}
+                  className="p-2 text-gray-700 hover:text-[#660019] transition-colors duration-200 xl:hidden"
+                  title="Logout"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                </button>
               </div>
             ) : (
-              <button
-                onClick={handleLogin}
-                className="px-4 py-2 bg-[#800020] text-white rounded-lg font-medium hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#6b001c]"
-              >
-                Login
-              </button>
+              <>
+                <button
+                  onClick={handleLogin}
+                  className="p-2 text-gray-700 hover:text-[#660019] transition-colors duration-200 md:inline-flex lg:hidden"
+                  title="Sign In"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                  </svg>
+                </button>
+                <button
+                  onClick={handleLogin}
+                  className="hidden lg:inline-flex px-4 py-2 bg-[#800020] text-white rounded-lg font-medium hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#6b001c]"
+                >
+                  Login
+                </button>
+              </>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 text-gray-700 hover:text-[#660019] transition-colors duration-200"
-            aria-label="Toggle menu"
-          >
+          {/* Mobile Icons & Menu Button */}
+          <div className="flex md:hidden items-center space-x-1 flex-shrink-0">
+            {/* Cart Icon - Mobile */}
+            <Link
+              to="/cart"
+              className="relative p-1 text-[#800020] hover:text-[#660019] transition-colors duration-200"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-[#660019] text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {cartCount > 9 ? '9+' : cartCount}
+                </span>
+              )}
+            </Link>
+
+            {/* Profile Icon - Mobile */}
+            {isAuthenticated ? (
+              <Link
+                to="/profile"
+                className="p-1 text-gray-700 hover:text-[#660019] transition-colors duration-200"
+                title="Profile"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
+              </Link>
+            ) : (
+              <button
+                onClick={handleLogin}
+                className="p-1 text-gray-700 hover:text-[#660019] transition-colors duration-200"
+                title="Login"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                  />
+                </svg>
+              </button>
+            )}
+
+            {/* Hamburger Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-1 text-gray-700 hover:text-[#660019] transition-colors duration-200"
+              aria-label="Toggle menu"
+              aria-controls="mobile-menu"
+              aria-expanded={isMobileMenuOpen}
+            >
             <svg
               className="w-6 h-6"
               fill="none"
@@ -223,131 +329,59 @@ const Navbar = () => {
                 />
               )}
             </svg>
-          </button>
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200">
-            {/* Mobile Search */}
-            <div className="relative mb-4">
-              <input
-                type="text"
-                placeholder="Search sarees..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyPress={handleSearchKeyPress}
-                className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent"
-              />
-              <button
-                onClick={handleSearch}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-rose-500"
-                type="button"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </button>
-            </div>
-
+          <div id="mobile-menu" className="md:hidden py-6 border-t border-gray-200 bg-white shadow-lg">
             {/* Mobile Navigation Links */}
-            <nav className="flex flex-col space-y-3">
+            <nav className="grid grid-cols-2 sm:grid-cols-3 gap-2 px-2">
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
                   to={link.path}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-gray-700 hover:text-rose-500 font-medium py-2 px-4 rounded-lg hover:bg-rose-50 transition-all duration-200"
+                  className="flex items-center justify-center text-gray-700 hover:text-[#660019] hover:bg-rose-50 font-medium py-3 px-4 rounded-lg transition-all duration-200 text-sm sm:text-base border border-gray-200"
                 >
                   {link.name}
                 </Link>
               ))}
             </nav>
 
-            {/* Mobile Icons */}
-            <div className="flex items-center space-x-6 mt-4 pt-4 border-t border-gray-200">
-              <Link
-                to="/cart"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-gray-700 hover:text-rose-500 transition-colors relative"
-              >
-                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-                {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-rose-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                    {cartCount > 9 ? '9+' : cartCount}
-                  </span>
-                )}
-              </Link>
-
-              {isAuthenticated ? (
-                <div className="flex items-center space-x-4">
-                  <Link
-                    to="/profile"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center space-x-2 text-gray-700 hover:text-rose-500 transition-colors duration-200"
-                  >
-                    <svg
-                      className="w-6 h-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      />
-                    </svg>
-                    <span>Profile</span>
-                  </Link>
-                  <button
-                    onClick={() => {
-                      handleLogout();
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="px-3 py-1 text-sm text-gray-700 hover:text-rose-500 transition-colors duration-200 border border-gray-300 rounded-md hover:border-rose-500"
-                  >
-                    Logout
-                  </button>
-                </div>
-              ) : (
+            {/* Auth Section in Mobile Menu */}
+            {isAuthenticated ? (
+              <div className="mt-6 pt-6 px-2 border-t border-gray-200">
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="w-full flex items-center justify-center space-x-2 py-3 px-4 bg-[#800020] text-white rounded-lg font-medium hover:bg-[#660019] transition-colors duration-200"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  <span>Logout</span>
+                </button>
+              </div>
+            ) : (
+              <div className="mt-6 pt-6 px-2 border-t border-gray-200">
                 <button
                   onClick={() => {
                     handleLogin();
                     setIsMobileMenuOpen(false);
                   }}
-                  className="flex items-center space-x-2 text-gray-700 hover:text-rose-500 transition-colors duration-200"
+                  className="w-full flex items-center justify-center space-x-2 py-3 px-4 bg-[#800020] text-white rounded-lg font-medium hover:bg-[#660019] transition-colors duration-200"
                 >
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-                    />
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                   </svg>
                   <span>Sign In</span>
                 </button>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         )}
       </div>
