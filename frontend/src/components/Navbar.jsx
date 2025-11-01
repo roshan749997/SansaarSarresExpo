@@ -83,42 +83,42 @@ const Navbar = () => {
         isScrolled ? 'shadow-lg' : 'shadow-sm'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo/Brand */}
           <Link to="/" className="flex-shrink-0">
             <img 
-              src="/src/assets/SareeLogo.png" 
+              src="/src/assets/SareeLogo1.png" 
               alt="SareeSansaar Logo" 
-              className="h-16 md:h-50 w-auto hover:scale-105 transition-transform duration-300"
+              className="h-10 sm:h-12 md:h-14 w-auto hover:scale-105 transition-transform duration-300"
             />
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-4 lg:space-x-6 xl:space-x-8 ml-4 sm:ml-6 md:ml-8 lg:ml-12">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 to={link.path}
-                className="text-gray-700 hover:text-[#660019] font-medium transition-colors duration-200 relative group"
+                className="text-sm sm:text-base text-gray-700 hover:text-[#660019] font-medium transition-colors duration-200 relative group px-2 py-1"
               >
                 {link.name}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r hover:text-[#660019] to-amber-400 group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-[#660019] to-amber-400 group-hover:w-[calc(100%-0.5rem)] transition-all duration-300"></span>
               </Link>
             ))}
           </div>
 
           {/* Search Bar & Icons */}
-          <div className="hidden lg:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-2 sm:space-x-3 lg:space-x-4">
             {/* Search Bar */}
             <div className="relative">
               <input
                 type="text"
-                placeholder="Search sarees..."
+                placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={handleSearchKeyPress}
-                className="w-120 px-4 py-2 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 hover:text-[#660019] focus:border-transparent transition-all duration-200"
+                className="w-32 sm:w-40 md:w-48 lg:w-56 xl:w-64 px-3 sm:px-4 py-1.5 sm:py-2 pl-8 sm:pl-10 text-sm sm:text-base border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#660019] focus:border-transparent transition-all duration-200"
               />
               <button
                 onClick={handleSearch}
@@ -198,7 +198,8 @@ const Navbar = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden p-2 text-gray-700 hover:text-[#660019] transition-colors duration-200"
+            className="md:hidden p-2 text-gray-700 hover:text-[#660019] transition-colors duration-200"
+            aria-label="Toggle menu"
           >
             <svg
               className="w-6 h-6"
@@ -227,7 +228,7 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden py-4 border-t border-gray-200">
+          <div className="md:hidden py-4 border-t border-gray-200">
             {/* Mobile Search */}
             <div className="relative mb-4">
               <input
