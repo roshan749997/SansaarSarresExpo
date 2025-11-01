@@ -72,18 +72,7 @@ const Navbar = () => {
   // Navigation links
   const navLinks = [
     { name: 'Home', path: '/' },
-    { name: 'Shop', path: '/shop' },
     { name: 'Collections', path: '/collections' },
-    { 
-      name: 'Categories', 
-      submenu: [
-        { name: 'Banarasi', path: '/category/banarasi' },
-        { name: 'Kanjivaram', path: '/category/kanjivaram' },
-        { name: 'Chanderi', path: '/category/chanderi' },
-        { name: 'Tussar', path: '/category/tussar' },
-        { name: 'Maheshwari', path: '/category/maheshwari' },
-      ]
-    },
     { name: 'About', path: '/about' },
     { name: 'Contact', path: '/contact' },
   ];
@@ -111,10 +100,10 @@ const Navbar = () => {
               <Link
                 key={link.name}
                 to={link.path}
-                className="text-gray-700 hover:text-rose-500 font-medium transition-colors duration-200 relative group"
+                className="text-gray-700 hover:text-[#660019] font-medium transition-colors duration-200 relative group"
               >
                 {link.name}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-400 to-amber-400 group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r hover:text-[#660019] to-amber-400 group-hover:w-full transition-all duration-300"></span>
               </Link>
             ))}
           </div>
@@ -129,11 +118,11 @@ const Navbar = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={handleSearchKeyPress}
-                className="w-64 px-4 py-2 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent transition-all duration-200"
+                className="w-120 px-4 py-2 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 hover:text-[#660019] focus:border-transparent transition-all duration-200"
               />
               <button
                 onClick={handleSearch}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-rose-500 transition-colors"
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[#660019] transition-colors"
                 type="button"
               >
                 <svg
@@ -172,7 +161,7 @@ const Navbar = () => {
               <div className="flex items-center space-x-2">
                 <Link
                   to="/profile"
-                  className="p-2 text-gray-700 hover:text-rose-500 transition-colors duration-200"
+                  className="p-2 text-gray-700 hover:text-[#660019] transition-colors duration-200"
                   title="Profile"
                 >
                   <svg
@@ -191,7 +180,7 @@ const Navbar = () => {
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="px-3 py-1 text-sm text-gray-700 hover:text-rose-500 transition-colors duration-200 border border-gray-300 rounded-md hover:border-rose-500"
+                  className="px-3 py-1 text-sm text-gray-700 hover:text-[#660019] transition-colors duration-200 border border-gray-300 rounded-md hover:border-rose-500"
                 >
                   Logout
                 </button>
@@ -209,7 +198,7 @@ const Navbar = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden p-2 text-gray-700 hover:text-rose-500 transition-colors duration-200"
+            className="lg:hidden p-2 text-gray-700 hover:text-[#660019] transition-colors duration-200"
           >
             <svg
               className="w-6 h-6"
