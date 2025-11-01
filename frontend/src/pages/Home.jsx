@@ -17,7 +17,7 @@ const Home = () => {
       <Collections />
 
       {/* Why Choose Us */}
-      <section className="py-16 px-4 bg-gradient-to-br from-rose-50 to-amber-50">
+      <section className="py-16 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-serif font-bold text-center mb-12 bg-gradient-to-r from-pink-600 to-amber-600 bg-clip-text text-transparent">
             Why Choose SareeSansaar?

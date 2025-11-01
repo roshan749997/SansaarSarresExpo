@@ -79,9 +79,9 @@ const Footer = () => {
             {/* Logo/Brand */}
           <Link to="/" className="flex-shrink-0">
             <img 
-              src="/src/assets/SareeLogo.png" 
+              src="src/assets/image.png" 
               alt="SareeSansaar Logo" 
-              className="h-12 md:h-16 w-auto hover:scale-105 transition-transform duration-300"
+              className="h-25 md:h-70 w-auto hover:scale-105 transition-transform duration-300 mb-4"
             />
           </Link>
             <p className="text-gray-300 text-sm leading-relaxed mb-6 max-w-md">

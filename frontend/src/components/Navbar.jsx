@@ -90,7 +90,7 @@ const Navbar = () => {
             <img 
               src="/src/assets/SareeLogo.png" 
               alt="SareeSansaar Logo" 
-              className="h-12 md:h-16 w-auto hover:scale-105 transition-transform duration-300"
+              className="h-16 md:h-50 w-auto hover:scale-105 transition-transform duration-300"
             />
           </Link>
 
