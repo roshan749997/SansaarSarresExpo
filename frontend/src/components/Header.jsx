@@ -99,7 +99,14 @@ const Header = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleClick = (categoryName) => {
+  const handleClick = (categoryName, e) => {
+    // Only toggle category if it's not a link click
+    if (e && e.target.tagName === 'A') {
+      if (window.innerWidth < 768) {
+        setActiveCategory(null);
+      }
+      return;
+    }
     setActiveCategory(prev => (prev === categoryName ? null : categoryName));
   };
 
@@ -132,27 +139,28 @@ const Header = () => {
 
               {/* Dropdown */}
               {category.subcategories && activeCategory === category.name && (
-                <div 
-                  className="absolute left-1/2 transform -translate-x-1/2 mt-1 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-100"
-                >
-                  <Link
-                    to={category.path}
-                    className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-rose-500 font-medium"
-                    onClick={() => setActiveCategory(null)}
-                  >
-                    All {category.name}
-                  </Link>
-                  <div className="border-t border-gray-100 my-1" />
-                  {category.subcategories.map((subcategory) => (
+                <div className="absolute left-1/2 transform -translate-x-1/2 mt-1 z-50">
+                  <div className="bg-white rounded-lg shadow-xl border border-gray-100 overflow-hidden w-56">
                     <Link
-                      key={subcategory.name}
-                      to={subcategory.path}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-rose-500 transition-colors duration-150"
+                      to={category.path}
+                      className="block px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-rose-500 border-b border-gray-100"
                       onClick={() => setActiveCategory(null)}
                     >
-                      {subcategory.name}
+                      All {category.name}
                     </Link>
-                  ))}
+                    <div className="max-h-[60vh] overflow-y-auto custom-scrollbar">
+                      {category.subcategories.map((subcategory) => (
+                        <Link
+                          key={subcategory.name}
+                          to={subcategory.path}
+                          className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-rose-50 hover:text-rose-500 transition-colors duration-150"
+                          onClick={() => setActiveCategory(null)}
+                        >
+                          {subcategory.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
@@ -166,7 +174,7 @@ const Header = () => {
             {categories.map((category) => (
               <div key={category.name} className="shrink-0">
                 <button
-                  onClick={() => handleClick(category.name === activeCategory ? null : category.name)}
+                  onClick={(e) => handleClick(category.name, e)}
                   className={`px-4 py-2 text-sm font-medium rounded-full transition-colors duration-200 whitespace-nowrap ${
                     activeCategory === category.name 
                       ? 'bg-rose-500 text-white shadow-md' 
@@ -181,36 +189,46 @@ const Header = () => {
           
           {/* Subcategories */}
           {activeCategory && (
-            <div className="bg-white border-t border-gray-200 mt-2 py-3">
-              <div className="flex items-center justify-between px-4 mb-2">
+            <div className="bg-white border-t border-gray-200 mt-2">
+              <div className="sticky top-0 z-10 bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between">
                 <h3 className="text-sm font-medium text-gray-700">
                   {categories.find(cat => cat.name === activeCategory)?.name} Categories
                 </h3>
                 <button 
                   onClick={() => setActiveCategory(null)}
-                  className="text-rose-500 text-sm font-medium"
+                  className="text-rose-500 text-sm font-medium hover:text-rose-600"
                 >
                   Close
                 </button>
               </div>
-              <div className="px-4 space-y-1">
-                {categories
-                  .find(cat => cat.name === activeCategory)
-                  ?.subcategories?.map((subcategory) => (
+              <div className="relative max-h-[calc(100vh-180px)] overflow-y-auto">
+                <div className="divide-y divide-gray-100">
+                  {categories
+                    .find(cat => cat.name === activeCategory)
+                    ?.subcategories?.map((subcategory) => (
                     <Link
                       key={subcategory.name}
                       to={subcategory.path}
-                      onClick={() => setActiveCategory(null)}
-                      className="block px-4 py-3 text-sm text-gray-700 hover:text-rose-500 hover:bg-rose-50 rounded-md transition-colors duration-200"
+                      onClick={() => {
+                        setActiveCategory(null);
+                        // Close mobile menu if needed
+                        if (window.innerWidth < 768) {
+                          const menu = document.getElementById('mobile-menu');
+                          if (menu) menu.classList.add('hidden');
+                        }
+                      }}
+                      className="block px-6 py-3 text-sm text-gray-700 hover:text-rose-500 hover:bg-rose-50 transition-colors duration-200"
                     >
                       {subcategory.name}
                     </Link>
                   ))}
+                </div>
+                <div className="sticky bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
               </div>
             </div>
           )}
           
-          <style>{`
+          <style jsx>{`
             .hide-scrollbar::-webkit-scrollbar {
               display: none;
               height: 0;
@@ -219,6 +237,23 @@ const Header = () => {
               -ms-overflow-style: none;
               scrollbar-width: none;
               scrollbar-height: none;
+            }
+            .custom-scrollbar {
+              scrollbar-width: thin;
+              scrollbar-color: #e5e7eb #f9fafb;
+            }
+            .custom-scrollbar::-webkit-scrollbar {
+              width: 6px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-track {
+              background: #f9fafb;
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb {
+              background-color: #e5e7eb;
+              border-radius: 3px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+              background-color: #d1d5db;
             }
           `}</style>
         </div>
