@@ -20,6 +20,7 @@ export const api = {
   signin: (payload) => request('/api/auth/signin', { method: 'POST', body: JSON.stringify(payload) }),
   signup: (payload) => request('/api/auth/signup', { method: 'POST', body: JSON.stringify(payload) }),
   forgotPassword: (payload) => request('/api/auth/forgot-password', { method: 'POST', body: JSON.stringify(payload) }),
+  me: () => request('/api/auth/me', { method: 'GET' }),
   // Cart endpoints
   getCart: () => request('/api/cart', { method: 'GET' }),
   addToCart: ({ productId, quantity = 1 }) => request('/api/cart/add', { method: 'POST', body: JSON.stringify({ productId, quantity }) }),

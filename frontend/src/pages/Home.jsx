@@ -3,13 +3,13 @@ import Collections from '../components/Collections';
 
 const Home = () => {
   return (
-    <div className="min-h-screen pt-7.5">
+    <div className="min-h-screen pt-0">
       {/* Hero Section with Banner */}
-      <section className="w-full pt-3">
+      <section className="w-full pt-0">
         <img 
           src="https://res.cloudinary.com/duc9svg7w/image/upload/v1761978463/Effortlessly_smoothen_every_fabric_20251101_014257_0000_pmkwyh.png" 
           alt="SareeSansaar - Premium Saree Collection"
-          className="w-full h-auto object-cover"
+          className="block w-full h-auto object-cover"
         />
       </section>
 

@@ -111,7 +111,7 @@ const Header = () => {
   };
 
   return (
-    <header className="fixed top-20 left-0 right-0 z-40 bg-white border-t border-gray-200 shadow-sm">
+    <header className="sticky top-20 z-40 bg-white border-t border-gray-200 shadow-sm">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center justify-center space-x-8 py-3" ref={headerRef}>

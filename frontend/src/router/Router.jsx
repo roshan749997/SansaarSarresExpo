@@ -11,6 +11,7 @@ import SignUp from '../pages/SignUp';
 import ForgotPassword from '../pages/ForgotPassword';
 import CategoryList from '../pages/CategoryList';
 import ProductDetail from '../components/ProductDetail';
+import Profile from '../pages/Profile';
 import ProductList from '../components/ProductList';
 import Cart from '../components/cart';
 
@@ -62,6 +63,7 @@ const Router = () => {
 
           {/* Private route(s) */}
           <Route path="cart" element={<RequireAuth><Cart /></RequireAuth>} />
+          <Route path="profile" element={<RequireAuth><Profile /></RequireAuth>} />
         </Route>
 
         <Route path="signin" element={<RedirectIfAuth><SignIn /></RedirectIfAuth>} />

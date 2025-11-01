@@ -6,11 +6,11 @@ import Footer from './Footer';
 const Layout = () => {
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Header */}
-      <Header />
-
       {/* Navbar */}
       <Navbar />
+
+      {/* Header */}
+      <Header />
 
       {/* Main Content Area */}
       <main className="flex-grow">
