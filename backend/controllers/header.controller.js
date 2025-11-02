@@ -1,4 +1,5 @@
 import { Category } from '../models/Category.js';
+import { Product } from '../models/product.js';
 
 export const getHeaderData = async (req, res) => {
   try {

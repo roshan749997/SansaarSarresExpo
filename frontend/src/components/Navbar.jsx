@@ -1,12 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { searchProducts } from '../services/api';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+  const searchWrapRefMobile = useRef(null);
+  const searchWrapRefDesktop = useRef(null);
   const navigate = useNavigate();
   const { cartCount } = useCart();
 
@@ -57,17 +63,57 @@ const Navbar = () => {
   };
 
   const handleSearch = () => {
-    if (searchQuery.trim()) {
-      // Navigate to search results page or trigger search
-      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
-    }
+    const q = searchQuery.trim();
+    if (!q) return;
+    setSearchOpen(false);
+    navigate(`/search?q=${encodeURIComponent(q)}`);
   };
 
   const handleSearchKeyPress = (e) => {
     if (e.key === 'Enter') {
+      e.preventDefault();
       handleSearch();
     }
+    if (e.key === 'Escape') {
+      setSearchOpen(false);
+    }
   };
+
+  // Debounced fetch for inline search results
+  useEffect(() => {
+    const q = searchQuery.trim();
+    if (q.length < 2) {
+      setSearchResults([]);
+      setSearchLoading(false);
+      setSearchOpen(false);
+      return;
+    }
+    setSearchLoading(true);
+    setSearchOpen(true);
+    const t = setTimeout(async () => {
+      try {
+        const data = await searchProducts(q);
+        const items = data?.results || [];
+        setSearchResults(items);
+      } catch (err) {
+        setSearchResults([]);
+      } finally {
+        setSearchLoading(false);
+      }
+    }, 250);
+    return () => clearTimeout(t);
+  }, [searchQuery]);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const onClick = (e) => {
+      const inMobile = searchWrapRefMobile.current && searchWrapRefMobile.current.contains(e.target);
+      const inDesktop = searchWrapRefDesktop.current && searchWrapRefDesktop.current.contains(e.target);
+      if (!inMobile && !inDesktop) setSearchOpen(false);
+    };
+    document.addEventListener('mousedown', onClick);
+    return () => document.removeEventListener('mousedown', onClick);
+  }, []);
 
   // Navigation links
   const navLinks = [
@@ -96,13 +142,14 @@ const Navbar = () => {
 
           {/* Mobile Search (visible only on small screens) */}
           <div className="flex-1 min-w-0 px-2 md:hidden">
-            <div className="relative">
+            <div className="relative" ref={searchWrapRefMobile}>
               <input
                 type="text"
                 placeholder="Search..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => { const v = e.target.value; setSearchQuery(v); setSearchOpen(v.trim().length >= 2); }}
                 onKeyPress={handleSearchKeyPress}
+                onFocus={() => { if (searchQuery.trim().length >= 2) setSearchOpen(true); }}
                 className="w-full px-3 py-1.5 pl-9 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent"
               />
               <button
@@ -115,6 +162,45 @@ const Navbar = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </button>
+              {searchOpen && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
+                  {searchLoading && (
+                    <div className="px-4 py-3 text-sm text-gray-500">Searching…</div>
+                  )}
+                  {!searchLoading && searchQuery.trim() && searchResults.length === 0 && (
+                    <div className="px-4 py-3 text-sm text-gray-500">No products found</div>
+                  )}
+                  {!searchLoading && searchResults.length > 0 && (
+                    <ul className="max-h-80 overflow-auto divide-y divide-gray-100">
+                      {searchResults.slice(0, 8).map((p) => (
+                        <li key={p._id || p.id || p.slug}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSearchOpen(false);
+                              navigate(`/product/${p._id || p.id || ''}`);
+                            }}
+                            className="w-full flex items-center gap-3 px-4 py-3 hover:bg-rose-50 text-left"
+                          >
+                            <img
+                              src={p.images?.image1 || p.image || 'https://via.placeholder.com/60x80?text=No+Image'}
+                              alt={p.title || p.name || 'Product'}
+                              className="w-12 h-16 object-cover rounded-md border border-gray-100"
+                              onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/60x80?text=No+Image'; }}
+                            />
+                            <div className="min-w-0 flex-1">
+                              <p className="text-sm font-medium text-gray-900 truncate">{p.title || p.name || 'Product'}</p>
+                              {p.price && (
+                                <p className="text-xs text-gray-600">₹{Number(p.price).toLocaleString()}</p>
+                              )}
+                            </div>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
@@ -134,13 +220,14 @@ const Navbar = () => {
           {/* Search Bar & Icons */}
           <div className="hidden md:flex items-center space-x-2 lg:space-x-3 ml-4 lg:ml-8 flex-1 max-w-3xl">
             {/* Search Bar - Takes remaining space */}
-            <div className="relative w-full">
+            <div className="relative w-full" ref={searchWrapRefDesktop}>
               <input
                 type="text"
                 placeholder="Search..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => { const v = e.target.value; setSearchQuery(v); setSearchOpen(v.trim().length >= 2); }}
                 onKeyPress={handleSearchKeyPress}
+                onFocus={() => { if (searchQuery.trim().length >= 2) setSearchOpen(true); }}
                 className="w-full px-3 py-1.5 pl-8 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#660019] focus:border-transparent transition-all duration-200"
               />
               <button

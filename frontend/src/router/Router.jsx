@@ -15,6 +15,8 @@ import Profile from '../pages/Profile';
 import ProductList from '../components/ProductList';
 import Cart from '../components/cart';
 import Address from '../pages/Address';
+import Search from '../pages/Search';
+
 
 const isAuthenticated = () => {
   try {
@@ -66,6 +68,7 @@ const Router = () => {
           <Route path="cart" element={<RequireAuth><Cart /></RequireAuth>} />
           <Route path="checkout/address" element={<RequireAuth><Address /></RequireAuth>} />
           <Route path="profile" element={<RequireAuth><Profile /></RequireAuth>} />
+          <Route path="search" element={<Search />} />
         </Route>
 
         <Route path="signin" element={<RedirectIfAuth><SignIn /></RedirectIfAuth>} />
