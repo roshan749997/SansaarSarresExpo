@@ -26,64 +26,64 @@ const Header = () => {
       name: 'Cotton', 
       path: '/category/cotton',
       subcategories: [
-  { name: 'Bengali Cotton Sarees', path: '/category/cotton/bengali-sarees' },
-  { name: 'Maheshwari Cotton Sarees', path: '/category/cotton/maheshwari-cotton' },
-  { name: 'Jaipur Cotton Sarees', path: '/category/cotton/jaipur-cotton' },
+  { name: 'Bengali Cotton Sarees', path: '/category/cotton/bengali-cotton-sarees' },
+  { name: 'Maheshwari Cotton Sarees', path: '/category/cotton/maheshwari-cotton-sarees' },
+  { name: 'Jaipur Cotton Sarees', path: '/category/cotton/jaipur-cotton-sarees' },
   { name: 'South Cotton Sarees', path: '/category/cotton/south-cotton-sarees' },
-  { name: 'Office Wear Cotton Sarees', path: '/category/cotton/office-wear-sarees' },
-  { name: 'Dr.Khadi Cotton Sarees', path: '/category/cotton/dr-khadi' },
-  { name: 'Block Printed Cotton Sarees', path: '/category/cotton/block-printed-sarees' },
-  { name: 'Bagru Print Cotton Sarees', path: '/category/cotton/bagru-print-sarees' },
-  { name: 'Ajrakh Print Cotton Sarees', path: '/category/cotton/ajrakh-print-sarees' },
-  { name: 'Ikkat Cotton Sarees', path: '/category/cotton/ikkat-sarees' },
+  { name: 'Office Wear Cotton Sarees', path: '/category/cotton/office-wear-cotton-sarees' },
+  { name: 'Dr.Khadi Cotton Sarees', path: '/category/cotton/dr-khadi-cotton-sarees' },
+  { name: 'Block Printed Cotton Sarees', path: '/category/cotton/block-printed-cotton-sarees' },
+  { name: 'Bagru Print Cotton Sarees', path: '/category/cotton/bagru-print-cotton-sarees' },
+  { name: 'Ajrakh Print Cotton Sarees', path: '/category/cotton/ajrakh-print-cotton-sarees' },
+  { name: 'Ikkat Cotton Sarees', path: '/category/cotton/ikkat-cotton-sarees' },
   { name: 'Chanderi Cotton Silks', path: '/category/cotton/chanderi-cotton-silks' },
-  { name: 'Kalamkari Cotton Sarees', path: '/category/cotton/kalamkari-sarees' },]
+  { name: 'Kalamkari Cotton Sarees', path: '/category/cotton/kalamkari-cotton-sarees' },]
 
     },
     {
       name: 'Regional',
       path: '/category/regional',
       subcategories: [
-        { name: 'Sambalpuri Regional Sarees', path: '/category/regional/sambalpuri-sarees' },
-        { name: 'Kanjivaram Regional Sarees', path: '/category/regional/kanjivaram-sarees' },
-        { name: 'Bengali Regional Sarees', path: '/category/regional/bengali-sarees' },
-        { name: 'Mysore Regional Sarees', path: '/category/regional/mysore-sarees' },
-        { name: 'Maheshwari Regional Sarees', path: '/category/regional/maheshwari-sarees' },
-        { name: 'Karnataka Regional Sarees', path: '/category/regional/karnataka-sarees' },
-        { name: 'Tamilnadu Regional Sarees', path: '/category/regional/tamilnadu-sarees' },
-        { name: 'Banarasi Regional Sarees', path: '/category/regional/banarasi-sarees' },
-        { name: 'Banarasi Regional Dupatta', path: '/category/regional/banarasi-dupatta' }
+        { name: 'Sambalpuri Regional Sarees', path: '/category/regional/sambalpuri-regional-sarees' },
+        { name: 'Kanjivaram Regional Sarees', path: '/category/regional/kanjivaram-regional-sarees' },
+        { name: 'Bengali Regional Sarees', path: '/category/regional/bengali-regional-sarees' },
+        { name: 'Mysore Regional Sarees', path: '/category/regional/mysore-regional-sarees' },
+        { name: 'Maheshwari Regional Sarees', path: '/category/regional/maheshwari-regional-sarees' },
+        { name: 'Karnataka Regional Sarees', path: '/category/regional/karnataka-regional-sarees' },
+        { name: 'Tamilnadu Regional Sarees', path: '/category/regional/tamilnadu-regional-sarees' },
+        { name: 'Banarasi Regional Sarees', path: '/category/regional/banarasi-regional-sarees' },
+        { name: 'Banarasi Regional Dupatta', path: '/category/regional/banarasi-regional-dupatta' }
       ]
     },
     { 
       name: 'Banarasi', 
       path: '/category/banarasi',
       subcategories: [
-        { name: 'Banarasi Sarees', path: '/category/banarasi/banarasi-sarees' },
-        { name: 'Banarasi Dupatta', path: '/category/banarasi/banarasi-dupatta' },
-        { name: 'Banarasi Dress Material', path: '/category/banarasi/banarasi-dress-material' }
+        { name: 'Banarasi Sarees', path: '/category/banarasi/banarasi-regional-sarees' },
+        { name: 'Banarasi Dupatta', path: '/category/banarasi/banarasi-regional-dupatta' },
+        { name: 'Banarasi Dress Material', path: '/category/banarasi/banarasi-regional-dress-material' }
       ]
     },
     { 
       name: 'Designer Sarees', 
       path: '/category/designer-sarees',
       subcategories: [
-        { name: 'Party Wear Saree', path: '/category/designer-sarees/party-wear' },
-        { name: 'Wedding Sarees', path: '/category/designer-sarees/wedding' },
-        { name: 'Festive Sarees', path: '/category/designer-sarees/festive' },
-        { name: 'Bollywood Style Sarees', path: '/category/designer-sarees/bollywood-style' },
-        { name: 'Heavy Embroidered Sarees', path: '/category/designer-sarees/heavy-embroidered' }
+        { name: 'Party Wear Saree', path: '/category/designer-sarees/party-wear-saree' },
+        { name: 'Wedding Sarees', path: '/category/designer-sarees/wedding-sarees' },
+        { name: 'Festive Sarees', path: '/category/designer-sarees/festive-sarees' },
+        { name: 'Bollywood Style Sarees', path: '/category/designer-sarees/bollywood-style-sarees' },
+        { name: 'Heavy Embroidered Sarees', path: '/category/designer-sarees/heavy-embroidered-sarees' }
       ]
     },
     { 
       name: 'Printed Sarees', 
       path: '/category/printed-sarees',
       subcategories: [
-        { name: 'Floral Printed Sarees', path: '/category/printed-sarees/floral' },
-        { name: 'Digital Printed Sarees', path: '/category/printed-sarees/digital' },
-        { name: 'Block Printed Sarees', path: '/category/printed-sarees/block' },
-        { name: 'Abstract Printed Sarees', path: '/category/printed-sarees/abstract' },
-        { name: 'Geometric Printed Sarees', path: '/category/printed-sarees/geometric' }
+        { name: 'Floral Printed Sarees', path: '/category/printed-sarees/floral-printed-sarees' },
+        { name: 'Digital Printed Sarees', path: '/category/printed-sarees/digital-printed-sarees' },
+        { name: 'Block Printed Sarees', path: '/category/printed-sarees/block-printed-sarees' },
+        { name: 'Abstract Printed Sarees', path: '/category/printed-sarees/abstract-printed-sarees' },
+        { name: 'Geometric Printed Sarees', path: '/category/printed-sarees/geometric-printed-sarees' }
       ]
     },
   ];
