@@ -118,31 +118,30 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden xl:flex items-center space-x-2 xl:space-x-6 2xl:space-x-8 xl:ml-8 2xl:ml-12">
+          {/* Desktop Navigation - Show on md and up */}
+          <div className="hidden md:flex items-center space-x-3 lg:space-x-6 ml-2 md:ml-4 lg:ml-8">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 to={link.path}
-                className="text-sm sm:text-base text-gray-700 hover:text-[#660019] font-medium transition-colors duration-200 relative group px-0.5 py-1"
+                className="text-gray-700 hover:text-[#660019] font-medium transition-colors duration-200 text-sm whitespace-nowrap"
               >
                 {link.name}
-                <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-[#660019] to-amber-400 group-hover:w-[calc(100%-0.5rem)] transition-all duration-300"></span>
               </Link>
             ))}
           </div>
 
           {/* Search Bar & Icons */}
-          <div className="hidden md:flex items-center space-x-1 sm:space-x-2 lg:space-x-3 ml-auto">
-            {/* Search Bar */}
-            <div className="relative">
+          <div className="hidden md:flex items-center space-x-2 lg:space-x-3 ml-4 lg:ml-8 flex-1 max-w-3xl">
+            {/* Search Bar - Takes remaining space */}
+            <div className="relative w-full">
               <input
                 type="text"
                 placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={handleSearchKeyPress}
-                className="w-48 md:w-64 lg:w-80 xl:w-[40rem] px-2 sm:px-2 py-1.5 sm:py-2 pl-7 sm:pl-9 text-sm sm:text-base border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#660019] focus:border-transparent transition-all duration-200"
+                className="w-full px-3 py-1.5 pl-8 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#660019] focus:border-transparent transition-all duration-200"
               />
               <button
                 onClick={handleSearch}
