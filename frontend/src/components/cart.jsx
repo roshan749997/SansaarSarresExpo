@@ -56,12 +56,14 @@ function Cart() {
           <div className="lg:col-span-2 space-y-4">
             {cart.map((item) => (
               <div key={item.id} className="bg-white rounded-lg shadow-sm p-4 flex items-start border border-gray-100">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-24 h-24 object-cover rounded-md cursor-pointer"
-                  onClick={() => navigate(`/banarasi/${item.id}`)}
-                />
+                <div className="w-24 h-24 flex items-center justify-center overflow-hidden rounded-md cursor-pointer">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="min-w-full min-h-full object-contain"
+                    onClick={() => navigate(`/banarasi/${item.id}`)}
+                  />
+                </div>
                 <div className="ml-4 flex-1">
                   <h3 
                     className="text-lg font-medium text-gray-800 cursor-pointer hover:text-amber-600"
@@ -146,10 +148,6 @@ function Cart() {
               </p>
             </div>
             
-            <div className="mt-6 p-4 bg-amber-50 border border-amber-100 rounded-lg">
-              <h3 className="font-medium text-amber-800 mb-2">Free Shipping</h3>
-              <p className="text-sm text-amber-700">Enjoy free shipping on all orders over ₹999</p>
-            </div>
           </div>
         </div>
       )}
