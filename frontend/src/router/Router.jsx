@@ -14,6 +14,7 @@ import ProductDetail from '../components/ProductDetail';
 import Profile from '../pages/Profile';
 import ProductList from '../components/ProductList';
 import Cart from '../components/cart';
+import Address from '../pages/Address';
 
 const isAuthenticated = () => {
   try {
@@ -63,6 +64,7 @@ const Router = () => {
 
           {/* Private route(s) */}
           <Route path="cart" element={<RequireAuth><Cart /></RequireAuth>} />
+          <Route path="checkout/address" element={<RequireAuth><Address /></RequireAuth>} />
           <Route path="profile" element={<RequireAuth><Profile /></RequireAuth>} />
         </Route>
 

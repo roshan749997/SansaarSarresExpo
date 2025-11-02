@@ -128,7 +128,7 @@ function Cart() {
               </div>
               
               <button 
-                onClick={() => alert('Proceeding to checkout...')}
+                onClick={() => navigate('/checkout/address')}
                 className="w-full bg-[#800020] text-white py-3 px-4 rounded-md hover:bg-[#660019] transition-colors font-medium"
               >
                 Proceed to Checkout
