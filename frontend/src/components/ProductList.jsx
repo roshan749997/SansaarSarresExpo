@@ -445,7 +445,6 @@ const ProductList = ({ defaultCategory } = {}) => {
                         <h3 className="text-sm font-medium text-gray-600 line-clamp-1">
                           {p.product_info?.manufacturer || 'VARNICRAFTS'}
                         </h3>
-                        <span className="text-xs text-gray-400">Sponsored</span>
                       </div>
                       <p className="text-sm font-bold text-gray-900 line-clamp-2 mb-2 min-h-[2.5rem]">{p.title || 'Untitled Product'}</p>
                 
