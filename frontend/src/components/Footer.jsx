@@ -4,29 +4,27 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const quickLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Shop', path: '/shop' },
-    { name: 'Collections', path: '/collections' },
-    { name: 'About', path: '/about' },
-    { name: 'Contact', path: '/contact' },
+    { name: 'HOME', path: '/' },
+    { name: 'COLLECTIONS', path: '/collections' },
+    { name: 'ABOUT', path: '/about' },
+    { name: 'CONTACT', path: '/contact' },
   ];
 
   const categories = [
-    { name: 'Banarasi Sarees', path: '/shop?category=banarasi' },
-    { name: 'Kanjivaram Sarees', path: '/shop?category=kanjivaram' },
-    { name: 'Paithani Sarees', path: '/shop?category=paithani' },
-    { name: 'Silk Sarees', path: '/shop?category=silk' },
-    { name: 'Cotton Sarees', path: '/shop?category=cotton' },
-    { name: 'Designer Sarees', path: '/shop?category=designer' },
+    { name: 'SILK SAREES', path: '/category/silk' },
+    { name: 'COTTON SAREES', path: '/category/cotton' },
+    { name: 'DESIGNER SAREES', path: '/category/designer' },
+    { name: 'REGIONAL SAREES', path: '/category/regional' },
+    { name: 'BANARASI SAREES', path: '/category/banarasi' },
   ];
 
   const customerService = [
-    { name: 'Shipping Policy', path: '/shipping' },
-    { name: 'Returns & Exchange', path: '/returns' },
-    { name: 'Size Guide', path: '/size-guide' },
-    { name: 'Care Instructions', path: '/care-instructions' },
+    { name: 'SHIPPING POLICY', path: '/shipping' },
+    { name: 'RETURNS & EXCHANGE', path: '/returns' },
+    { name: 'SIZE GUIDE', path: '/size-guide' },
+    { name: 'CARE INSTRUCTIONS', path: '/care-instructions' },
     { name: 'FAQ', path: '/faq' },
-    { name: 'Track Your Order', path: '/track-order' },
+    { name: 'TRACK YOUR ORDER', path: '/track-order' },
   ];
 
 
@@ -69,6 +67,13 @@ const Footer = () => {
     },
   ];
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
   return (
     <footer className="bg-[#273142] text-white border-t border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -81,12 +86,9 @@ const Footer = () => {
             <img 
               src="src/assets/image.png" 
               alt="SareeSansaar Logo" 
-              className="h-25 md:h-70 w-auto hover:scale-105 transition-transform duration-300 mb-4"
+              className="h-25 md:h-70 w-auto hover:scale-105 transition-transform duration-300 mb-6"
             />
           </Link>
-            <p className="text-gray-300 text-sm leading-relaxed mb-6 max-w-md">
-              Discover the elegance of traditional Indian sarees. We curate authentic, handcrafted sarees from master artisans across India, celebrating centuries of textile heritage and timeless beauty.
-            </p>
             
 
             {/* Social Media */}
@@ -120,6 +122,7 @@ const Footer = () => {
                 <li key={link.name}>
                   <Link
                     to={link.path}
+                    onClick={scrollToTop}
                     className="text-gray-300 hover:text-white transition-colors duration-200 inline-block hover:translate-x-1 transform text-sm"
                   >
                     {link.name}
@@ -140,6 +143,7 @@ const Footer = () => {
                 <li key={category.name}>
                   <Link
                     to={category.path}
+                    onClick={scrollToTop}
                     className="text-gray-300 hover:text-white transition-colors duration-200 inline-block hover:translate-x-1 transform text-sm"
                   >
                     {category.name}
@@ -160,6 +164,7 @@ const Footer = () => {
                 <li key={service.name}>
                   <Link
                     to={service.path}
+                    onClick={scrollToTop}
                     className="text-gray-300 hover:text-white transition-colors duration-200 inline-block hover:translate-x-1 transform text-sm"
                   >
                     {service.name}
@@ -181,19 +186,19 @@ const Footer = () => {
             GSTIN: 27ABCDE1234F1Z5 | CIN: U74999MH2020PTC123456
           </p>
           <div className="flex justify-center space-x-4 text-xs text-gray-400">
-            <Link to="/privacy" className="hover:text-rose-500 transition-colors duration-200">
+            <Link to="/privacy" onClick={scrollToTop} className="hover:text-rose-500 transition-colors duration-200">
               Privacy Policy
             </Link>
             <span className="text-gray-600">•</span>
-            <Link to="/terms" className="hover:text-white transition-colors duration-200">
+            <Link to="/terms" onClick={scrollToTop} className="hover:text-white transition-colors duration-200">
               Terms of Service
             </Link>
             <span className="text-gray-600">•</span>
-            <Link to="/shipping" className="hover:text-white transition-colors duration-200">
+            <Link to="/shipping" onClick={scrollToTop} className="hover:text-white transition-colors duration-200">
               Shipping Policy
             </Link>
             <span className="text-gray-600">•</span>
-            <Link to="/returns" className="hover:text-white transition-colors duration-200">
+            <Link to="/returns" onClick={scrollToTop} className="hover:text-white transition-colors duration-200">
               Return Policy
             </Link>
           </div>
