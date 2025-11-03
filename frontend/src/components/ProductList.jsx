@@ -41,10 +41,15 @@ const ProductList = ({ defaultCategory } = {}) => {
   
   const priceRanges = [
     { id: 1, label: '₹300 - ₹1,000', min: 300, max: 1000 },
-    { id: 2, label: '₹1,000 - ₹3,000', min: 1000, max: 3000 },
-    { id: 3, label: '₹3,000 - ₹5,000', min: 3000, max: 5000 },
-    { id: 4, label: '₹5,000 - ₹7,000', min: 5000, max: 7000 },
-    { id: 5, label: '₹7,000 - ₹10,000', min: 7000, max: 10000 },
+    { id: 2, label: '₹1,001 - ₹2,000', min: 1001, max: 2000 },
+    { id: 3, label: '₹2,001 - ₹3,000', min: 2001, max: 3000 },
+    { id: 4, label: '₹3,001 - ₹4,000', min: 3001, max: 4000 },
+    { id: 5, label: '₹4,001 - ₹5,000', min: 4001, max: 5000 },
+    { id: 6, label: '₹5,001 - ₹6,000', min: 5001, max: 6000 },
+    { id: 7, label: '₹6,001 - ₹7,000', min: 6001, max: 7000 },
+    { id: 8, label: '₹7,001 - ₹8,000', min: 7001, max: 8000 },
+    { id: 9, label: '₹8,001 - ₹10,000', min: 8001, max: 10000 },
+    { id: 10, label: 'Above ₹10,000', min: 10001, max: Infinity },
   ];
   
   // Fetch products
@@ -90,13 +95,6 @@ const ProductList = ({ defaultCategory } = {}) => {
           return price >= range.min && price <= range.max;
         });
       }
-    } else if (customPriceFrom || customPriceTo) {
-      result = result.filter(p => {
-        const price = p.price || (p.mrp - p.mrp * ((p.discountPercent || 0) / 100));
-        const from = customPriceFrom ? parseInt(customPriceFrom) : 0;
-        const to = customPriceTo ? parseInt(customPriceTo) : Infinity;
-        return price >= from && price <= to;
-      });
     }
     
     // Filter by material
@@ -109,7 +107,7 @@ const ProductList = ({ defaultCategory } = {}) => {
     }
     
     setFilteredProducts(result);
-  }, [products, selectedPriceRange, customPriceFrom, customPriceTo, selectedFabrics]);
+  }, [products, selectedPriceRange, selectedFabrics]);
   
   const toggleFabric = (fabric) => {
     setSelectedFabrics(prev => 
@@ -121,8 +119,6 @@ const ProductList = ({ defaultCategory } = {}) => {
   
   const resetFilters = () => {
     setSelectedPriceRange(null);
-    setCustomPriceFrom('');
-    setCustomPriceTo('');
     setSelectedFabrics([]);
   };
 
@@ -145,7 +141,7 @@ const ProductList = ({ defaultCategory } = {}) => {
 
   const activeFilterCount = [
     selectedFabrics.length,
-    selectedPriceRange || customPriceFrom || customPriceTo || selectedFabrics.length > 0 ? 1 : 0
+    selectedPriceRange ? 1 : 0
   ].reduce((a, b) => a + b, 0);
 
   const FilterContent = () => (
@@ -181,11 +177,7 @@ const ProductList = ({ defaultCategory } = {}) => {
                   id={`price-${range.id}`}
                   name="priceRange"
                   checked={selectedPriceRange === range.id}
-                  onChange={() => {
-                    setSelectedPriceRange(range.id);
-                    setCustomPriceFrom('');
-                    setCustomPriceTo('');
-                  }}
+                  onChange={() => setSelectedPriceRange(range.id)}
                   className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 cursor-pointer"
                 />
                 <label htmlFor={`price-${range.id}`} className="ml-3 text-sm text-gray-700 cursor-pointer">
@@ -193,43 +185,6 @@ const ProductList = ({ defaultCategory } = {}) => {
                 </label>
               </div>
             ))}
-            
-            {/* Custom Price Range */}
-            <div className="pt-3 mt-3 border-t border-gray-100">
-              <div className="flex items-center gap-2">
-                <div className="flex-1">
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">₹</span>
-                    <input
-                      type="number"
-                      placeholder="From"
-                      value={customPriceFrom}
-                      onChange={(e) => {
-                        setCustomPriceFrom(e.target.value);
-                        setSelectedPriceRange(null);
-                      }}
-                      className="w-full pl-7 pr-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500"
-                    />
-                  </div>
-                </div>
-                <span className="text-gray-400">-</span>
-                <div className="flex-1">
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">₹</span>
-                    <input
-                      type="number"
-                      placeholder="To"
-                      value={customPriceTo}
-                      onChange={(e) => {
-                        setCustomPriceTo(e.target.value);
-                        setSelectedPriceRange(null);
-                      }}
-                      className="w-full pl-7 pr-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         )}
       </div>
