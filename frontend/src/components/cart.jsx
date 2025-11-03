@@ -31,7 +31,7 @@ function Cart() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       <button 
-        onClick={() => navigate(-1)}
+        onClick={() => navigate('/collections')}
         className="flex items-center text-[#800020] hover:text-[#660019] mb-6 transition-colors cursor-pointer border border-[#800020] rounded-md px-4 py-2 hover:bg-[#800020] hover:text-white"
       >
         <FaArrowLeft className="mr-2" /> Continue Shopping
@@ -45,7 +45,7 @@ function Cart() {
           <h2 className="text-2xl font-semibold text-gray-700 mb-4">Your cart is empty</h2>
           <p className="text-gray-500 mb-6">Looks like you haven't added anything to your cart yet.</p>
           <button 
-            onClick={() => navigate('/shop')}
+            onClick={() => navigate('/collections')}
             className="bg-[#800020] text-white px-6 py-2 rounded-md hover:bg-[#660019] transition-colors cursor-pointer"
           >
             Continue Shopping
