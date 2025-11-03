@@ -1,12 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { searchProducts } from '../services/api';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+  const searchWrapRefMobile = useRef(null);
+  const searchWrapRefDesktop = useRef(null);
   const navigate = useNavigate();
   const { cartCount } = useCart();
 
@@ -57,25 +63,72 @@ const Navbar = () => {
   };
 
   const handleSearch = () => {
-    if (searchQuery.trim()) {
-      // Navigate to search results page or trigger search
-      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
-    }
+    const q = searchQuery.trim();
+    if (!q) return;
+    setSearchOpen(false);
+    navigate(`/search?q=${encodeURIComponent(q)}`);
   };
 
   const handleSearchKeyPress = (e) => {
     if (e.key === 'Enter') {
+      e.preventDefault();
       handleSearch();
+    }
+    if (e.key === 'Escape') {
+      setSearchOpen(false);
     }
   };
 
+  // Debounced fetch for inline search results
+  useEffect(() => {
+    const q = searchQuery.trim();
+    if (q.length < 2) {
+      setSearchResults([]);
+      setSearchLoading(false);
+      setSearchOpen(false);
+      return;
+    }
+    setSearchLoading(true);
+    setSearchOpen(true);
+    const t = setTimeout(async () => {
+      try {
+        const data = await searchProducts(q);
+        const items = data?.results || [];
+        setSearchResults(items);
+      } catch (err) {
+        setSearchResults([]);
+      } finally {
+        setSearchLoading(false);
+      }
+    }, 250);
+    return () => clearTimeout(t);
+  }, [searchQuery]);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const onClick = (e) => {
+      const inMobile = searchWrapRefMobile.current && searchWrapRefMobile.current.contains(e.target);
+      const inDesktop = searchWrapRefDesktop.current && searchWrapRefDesktop.current.contains(e.target);
+      if (!inMobile && !inDesktop) setSearchOpen(false);
+    };
+    document.addEventListener('mousedown', onClick);
+    return () => document.removeEventListener('mousedown', onClick);
+  }, []);
+
   // Navigation links
   const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Collections', path: '/collections' },
-    { name: 'About', path: '/about' },
-    { name: 'Contact', path: '/contact' },
+    { name: 'HOME', path: '/' },
+    { name: 'COLLECTIONS', path: '/collections' },
+    { name: 'ABOUT', path: '/about' },
+    { name: 'CONTACT', path: '/contact' },
   ];
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
 
   return (
     <nav
@@ -96,13 +149,14 @@ const Navbar = () => {
 
           {/* Mobile Search (visible only on small screens) */}
           <div className="flex-1 min-w-0 px-2 md:hidden">
-            <div className="relative">
+            <div className="relative" ref={searchWrapRefMobile}>
               <input
                 type="text"
                 placeholder="Search..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => { const v = e.target.value; setSearchQuery(v); setSearchOpen(v.trim().length >= 2); }}
                 onKeyPress={handleSearchKeyPress}
+                onFocus={() => { if (searchQuery.trim().length >= 2) setSearchOpen(true); }}
                 className="w-full px-3 py-1.5 pl-9 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent"
               />
               <button
@@ -115,34 +169,74 @@ const Navbar = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </button>
+              {searchOpen && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
+                  {searchLoading && (
+                    <div className="px-4 py-3 text-sm text-gray-500">Searching…</div>
+                  )}
+                  {!searchLoading && searchQuery.trim() && searchResults.length === 0 && (
+                    <div className="px-4 py-3 text-sm text-gray-500">No products found</div>
+                  )}
+                  {!searchLoading && searchResults.length > 0 && (
+                    <ul className="max-h-80 overflow-auto divide-y divide-gray-100">
+                      {searchResults.slice(0, 8).map((p) => (
+                        <li key={p._id || p.id || p.slug}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSearchOpen(false);
+                              navigate(`/product/${p._id || p.id || ''}`);
+                            }}
+                            className="w-full flex items-center gap-3 px-4 py-3 hover:bg-rose-50 text-left"
+                          >
+                            <img
+                              src={p.images?.image1 || p.image || 'https://via.placeholder.com/60x80?text=No+Image'}
+                              alt={p.title || p.name || 'Product'}
+                              className="w-12 h-16 object-cover rounded-md border border-gray-100"
+                              onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/60x80?text=No+Image'; }}
+                            />
+                            <div className="min-w-0 flex-1">
+                              <p className="text-sm font-medium text-gray-900 truncate">{p.title || p.name || 'Product'}</p>
+                              {p.price && (
+                                <p className="text-xs text-gray-600">₹{Number(p.price).toLocaleString()}</p>
+                              )}
+                            </div>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden xl:flex items-center space-x-2 xl:space-x-6 2xl:space-x-8 xl:ml-8 2xl:ml-12">
+          {/* Desktop Navigation - Show on md and up */}
+          <div className="hidden md:flex items-center space-x-3 lg:space-x-6 ml-2 md:ml-4 lg:ml-8">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 to={link.path}
-                className="text-sm sm:text-base text-gray-700 hover:text-[#660019] font-medium transition-colors duration-200 relative group px-0.5 py-1"
+                onClick={scrollToTop}
+                className="text-gray-700 hover:text-[#660019] font-medium transition-colors duration-200 text-sm whitespace-nowrap"
               >
                 {link.name}
-                <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-[#660019] to-amber-400 group-hover:w-[calc(100%-0.5rem)] transition-all duration-300"></span>
               </Link>
             ))}
           </div>
 
           {/* Search Bar & Icons */}
-          <div className="hidden md:flex items-center space-x-1 sm:space-x-2 lg:space-x-3 ml-auto">
-            {/* Search Bar */}
-            <div className="relative">
+          <div className="hidden md:flex items-center space-x-2 lg:space-x-3 ml-4 lg:ml-8 flex-1 max-w-3xl">
+            {/* Search Bar - Takes remaining space */}
+            <div className="relative w-full" ref={searchWrapRefDesktop}>
               <input
                 type="text"
                 placeholder="Search..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => { const v = e.target.value; setSearchQuery(v); setSearchOpen(v.trim().length >= 2); }}
                 onKeyPress={handleSearchKeyPress}
-                className="w-48 md:w-64 lg:w-80 xl:w-[40rem] px-2 sm:px-2 py-1.5 sm:py-2 pl-7 sm:pl-9 text-sm sm:text-base border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#660019] focus:border-transparent transition-all duration-200"
+                onFocus={() => { if (searchQuery.trim().length >= 2) setSearchOpen(true); }}
+                className="w-full px-3 py-1.5 pl-8 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#660019] focus:border-transparent transition-all duration-200"
               />
               <button
                 onClick={handleSearch}
@@ -168,7 +262,7 @@ const Navbar = () => {
             {/* Cart Icon */}
             <Link
               to="/cart"
-              className="relative p-2 text-[#800020] hover:text-[#660019] transition-colors duration-200"
+              className="relative p-2 text-gray-700 hover:text-[#660019] transition-colors duration-200"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -202,21 +296,6 @@ const Navbar = () => {
                     />
                   </svg>
                 </Link>
-                <button
-                  onClick={handleLogout}
-                  className="hidden xl:inline-flex px-3 py-1 text-sm text-gray-700 hover:text-[#660019] transition-colors duration-200 border border-gray-300 rounded-md hover:border-rose-500"
-                >
-                  Logout
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="p-2 text-gray-700 hover:text-[#660019] transition-colors duration-200 xl:hidden"
-                  title="Logout"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
-                </button>
               </div>
             ) : (
               <>
@@ -244,7 +323,7 @@ const Navbar = () => {
             {/* Cart Icon - Mobile */}
             <Link
               to="/cart"
-              className="relative p-1 text-[#800020] hover:text-[#660019] transition-colors duration-200"
+              className="relative p-1 text-gray-700 hover:text-[#660019] transition-colors duration-200"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />

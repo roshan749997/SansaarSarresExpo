@@ -31,8 +31,8 @@ function Cart() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       <button 
-        onClick={() => navigate(-1)}
-        className="flex items-center text-[#800020] hover:text-[#660019] mb-6 transition-colors"
+        onClick={() => navigate('/collections')}
+        className="flex items-center text-[#800020] hover:text-[#660019] mb-6 transition-colors cursor-pointer border border-[#800020] rounded-md px-4 py-2 hover:bg-[#800020] hover:text-white"
       >
         <FaArrowLeft className="mr-2" /> Continue Shopping
       </button>
@@ -45,8 +45,8 @@ function Cart() {
           <h2 className="text-2xl font-semibold text-gray-700 mb-4">Your cart is empty</h2>
           <p className="text-gray-500 mb-6">Looks like you haven't added anything to your cart yet.</p>
           <button 
-            onClick={() => navigate('/shop')}
-            className="bg-[#800020] text-white px-6 py-2 rounded-md hover:bg-[#660019] transition-colors"
+            onClick={() => navigate('/collections')}
+            className="bg-[#800020] text-white px-6 py-2 rounded-md hover:bg-[#660019] transition-colors cursor-pointer"
           >
             Continue Shopping
           </button>
@@ -56,12 +56,14 @@ function Cart() {
           <div className="lg:col-span-2 space-y-4">
             {cart.map((item) => (
               <div key={item.id} className="bg-white rounded-lg shadow-sm p-4 flex items-start border border-gray-100">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-24 h-24 object-cover rounded-md cursor-pointer"
-                  onClick={() => navigate(`/banarasi/${item.id}`)}
-                />
+                <div className="w-24 h-24 flex items-center justify-center overflow-hidden rounded-md cursor-pointer">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="min-w-full min-h-full object-contain"
+                    onClick={() => navigate(`/banarasi/${item.id}`)}
+                  />
+                </div>
                 <div className="ml-4 flex-1">
                   <h3 
                     className="text-lg font-medium text-gray-800 cursor-pointer hover:text-amber-600"
@@ -75,14 +77,14 @@ function Cart() {
                     <div className="flex items-center border border-gray-300 rounded-md">
                       <button 
                         onClick={() => handleQuantityChange(item.id, (item.quantity || 1) - 1)}
-                        className="px-3 py-1 text-gray-600 hover:bg-gray-100"
+                        className="px-3 py-1 text-gray-600 hover:bg-gray-100 cursor-pointer"
                       >
                         <FaMinus className="w-3 h-3" />
                       </button>
                       <span className="px-3 py-1 border-x border-gray-300">{item.quantity || 1}</span>
                       <button 
                         onClick={() => handleQuantityChange(item.id, (item.quantity || 1) + 1)}
-                        className="px-3 py-1 text-gray-600 hover:bg-gray-100"
+                        className="px-3 py-1 text-gray-600 hover:bg-gray-100 cursor-pointer"
                       >
                         <FaPlus className="w-3 h-3" />
                       </button>
@@ -90,7 +92,7 @@ function Cart() {
                     
                     <button
                       onClick={() => removeFromCart(item.id)}
-                      className="ml-4 text-red-500 hover:text-red-700 flex items-center"
+                      className="ml-4 text-red-500 hover:text-red-700 flex items-center cursor-pointer"
                     >
                       <FaTrash className="mr-1" /> Remove
                     </button>
@@ -128,15 +130,15 @@ function Cart() {
               </div>
               
               <button 
-                onClick={() => alert('Proceeding to checkout...')}
-                className="w-full bg-[#800020] text-white py-3 px-4 rounded-md hover:bg-[#660019] transition-colors font-medium"
+                onClick={() => navigate('/checkout/address')}
+                className="w-full bg-[#800020] text-white py-3 px-4 rounded-md hover:bg-[#660019] transition-colors font-medium cursor-pointer"
               >
                 Proceed to Checkout
               </button>
               
               <button 
                 onClick={clearCart}
-                className="w-full mt-3 text-[#800020] border border-[#800020] py-2 px-4 rounded-md hover:bg-[#800020] hover:text-white transition-colors text-sm font-medium"
+                className="w-full mt-3 text-[#800020] border border-[#800020] py-2 px-4 rounded-md hover:bg-[#800020] hover:text-white transition-colors text-sm font-medium cursor-pointer"
               >
                 Clear Cart
               </button>
@@ -146,10 +148,6 @@ function Cart() {
               </p>
             </div>
             
-            <div className="mt-6 p-4 bg-amber-50 border border-amber-100 rounded-lg">
-              <h3 className="font-medium text-amber-800 mb-2">Free Shipping</h3>
-              <p className="text-sm text-amber-700">Enjoy free shipping on all orders over ₹999</p>
-            </div>
           </div>
         </div>
       )}

@@ -6,12 +6,18 @@ import authRoutes from './routes/auth.routes.js';
 import headerRoutes from './routes/header.routes.js';
 import productRoutes from './routes/product.routes.js';
 import cartRoutes from './routes/cart.routes.js';
+<<<<<<< HEAD
+=======
+import addressRoutes from './routes/address.routes.js';
+
+>>>>>>> 20641fc88247cfd9c94aec48f8009dc88573a2d0
 import connectDB from './config/DataBaseConnection.js';
 
 configDotenv();
 
 const server = express();
 
+<<<<<<< HEAD
 // CORS configuration
 const corsOptions = {
   origin: function (origin, callback) {
@@ -68,6 +74,13 @@ server.use((req, res, next) => {
   
   next();
 });
+=======
+server.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  credentials: true,
+}));
+
+>>>>>>> 20641fc88247cfd9c94aec48f8009dc88573a2d0
 server.use(express.json());
 server.use(cookieParser());
 
@@ -76,6 +89,7 @@ server.use('/api/auth', authRoutes);
 server.use('/api/header', headerRoutes);
 server.use('/api/products', productRoutes);
 server.use('/api/cart', cartRoutes);
+server.use('/api/address', addressRoutes);
 
 const PORT = process.env.PORT || 5000;
 

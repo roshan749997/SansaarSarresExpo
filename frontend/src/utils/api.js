@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+const API_BASE_URL = `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'}/api`;
 
 async function request(path, options = {}) {
   const url = `${API_BASE_URL}${path}`;
@@ -17,14 +17,14 @@ async function request(path, options = {}) {
 }
 
 export const api = {
-  signin: (payload) => request('/api/auth/signin', { method: 'POST', body: JSON.stringify(payload) }),
-  signup: (payload) => request('/api/auth/signup', { method: 'POST', body: JSON.stringify(payload) }),
-  forgotPassword: (payload) => request('/api/auth/forgot-password', { method: 'POST', body: JSON.stringify(payload) }),
-  me: () => request('/api/auth/me', { method: 'GET' }),
+  signin: (payload) => request('/auth/signin', { method: 'POST', body: JSON.stringify(payload) }),
+  signup: (payload) => request('/auth/signup', { method: 'POST', body: JSON.stringify(payload) }),
+  forgotPassword: (payload) => request('/auth/forgot-password', { method: 'POST', body: JSON.stringify(payload) }),
+  me: () => request('/auth/me', { method: 'GET' }),
   // Cart endpoints
-  getCart: () => request('/api/cart', { method: 'GET' }),
-  addToCart: ({ productId, quantity = 1 }) => request('/api/cart/add', { method: 'POST', body: JSON.stringify({ productId, quantity }) }),
-  removeFromCart: (productId) => request(`/api/cart/remove/${productId}`, { method: 'DELETE' }),
+  getCart: () => request('/cart', { method: 'GET' }),
+  addToCart: ({ productId, quantity = 1 }) => request('/cart/add', { method: 'POST', body: JSON.stringify({ productId, quantity }) }),
+  removeFromCart: (productId) => request(`/cart/remove/${productId}`, { method: 'DELETE' }),
 };
 
 export default api;

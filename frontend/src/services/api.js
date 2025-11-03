@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000/api';
+const API_URL = `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'}/api`;
 
 export const fetchSarees = async (category) => {
   try {
@@ -51,4 +51,50 @@ export const searchProducts = async (query) => {
     console.error('Error searching products:', error);
     throw error;
   }
+};
+
+const authHeaders = () => {
+  const token = (() => { try { return localStorage.getItem('auth_token'); } catch { return null; } })();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
+export const getMyAddress = async () => {
+  const res = await fetch(`${API_URL}/address/me`, {
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    credentials: 'include',
+  });
+  if (!res.ok) throw new Error('Failed to fetch address');
+  return res.json();
+};
+
+export const saveMyAddress = async (payload) => {
+  const res = await fetch(`${API_URL}/address`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify(payload),
+    credentials: 'include',
+  });
+  if (!res.ok) throw new Error('Failed to save address');
+  return res.json();
+};
+
+export const updateAddressById = async (id, payload) => {
+  const res = await fetch(`${API_URL}/address/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify(payload),
+    credentials: 'include',
+  });
+  if (!res.ok) throw new Error('Failed to update address');
+  return res.json();
+};
+
+export const deleteAddressById = async (id) => {
+  const res = await fetch(`${API_URL}/address/${id}`, {
+    method: 'DELETE',
+    headers: { ...authHeaders() },
+    credentials: 'include',
+  });
+  if (!res.ok) throw new Error('Failed to delete address');
+  return res.json();
 };

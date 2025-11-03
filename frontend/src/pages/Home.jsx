@@ -17,30 +17,36 @@ const Home = () => {
       <Collections />
 
       {/* Why Choose Us */}
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-serif font-bold text-center mb-12 bg-gradient-to-r from-pink-600 to-amber-600 bg-clip-text text-transparent">
-            Why Choose SareeSansaar?
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {[
-              { icon: '✨', title: 'Premium Quality', desc: 'Handpicked finest fabrics' },
-              { icon: '🚚', title: 'Free Shipping', desc: 'On orders above ₹999' },
-              { icon: '🔄', title: 'Easy Returns', desc: '7-day return policy' },
-              { icon: '💎', title: 'Authentic', desc: '100% genuine products' },
-            ].map((feature, index) => (
-              <div
-                key={index}
-                className="text-center p-6 bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-              >
-                <div className="text-5xl mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">{feature.title}</h3>
-                <p className="text-gray-600">{feature.desc}</p>
-              </div>
-            ))}
+<section className="py-20 px-4 bg-white">
+  <div className="max-w-7xl mx-auto">
+    <h2 className="text-5xl font-light tracking-wide text-center mb-4 text-gray-800">
+      WHY CHOOSE SAREESANSAAR
+    </h2>
+    <p className="text-xl text-gray-600 text-center mb-16 font-light">
+      Discover our exclusive collection of handpicked sarees
+    </p>
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      {[
+        { icon: '✨', title: 'Premium Quality', desc: 'Handpicked finest fabrics from master weavers' },
+        { icon: '🚚', title: 'Free Shipping', desc: 'On orders above ₹999 across India' },
+        { icon: '🔄', title: 'Easy Returns', desc: '7-day hassle-free return policy' },
+        { icon: '💎', title: '100% Authentic', desc: 'Certified genuine handloom products' },
+      ].map((feature, index) => (
+        <div
+          key={index}
+          className="relative group"
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-pink-600 to-amber-600 rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+          <div className="relative text-center p-8 bg-white rounded-2xl border-2 border-gray-100 hover:border-pink-300 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl">
+            <div className="text-6xl mb-6 transform group-hover:scale-110 transition-transform duration-300">{feature.icon}</div>
+            <h3 className="text-2xl font-light text-gray-800 mb-3 tracking-wide">{feature.title}</h3>
+            <p className="text-gray-600 leading-relaxed font-light">{feature.desc}</p>
           </div>
         </div>
-      </section>
+      ))}
+    </div>
+  </div>
+</section>
     </div>
   );
 };
