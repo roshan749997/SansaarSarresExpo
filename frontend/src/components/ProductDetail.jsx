@@ -1,8 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { FaShoppingCart, FaRupeeSign, FaArrowLeft, FaStar, FaRegStar, FaBolt, FaSpinner, FaTimes, FaExpand } from "react-icons/fa";
+import { FaShoppingCart, FaRupeeSign, FaArrowLeft, FaStar, FaRegStar, FaBolt, FaSpinner, FaTimes, FaExpand, FaHeart, FaShareAlt } from "react-icons/fa";
 import { useCart } from "../context/CartContext";
 import { fetchSareeById } from "../services/api";
+
+const readWishlist = () => {
+  try {
+    const raw = localStorage.getItem('wishlist');
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+};
+
+const writeWishlist = (items) => {
+  try {
+    localStorage.setItem('wishlist', JSON.stringify(items));
+  } catch {}
+};
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -15,6 +30,7 @@ const ProductDetail = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const location = useLocation();
+  const [wishlisted, setWishlisted] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -34,6 +50,14 @@ const ProductDetail = () => {
     loadSaree();
   }, [id]);
 
+  // Initialize wishlist state when product loads
+  useEffect(() => {
+    if (!saree) return;
+    const list = readWishlist();
+    const pid = saree._id || id;
+    setWishlisted(list.some(p => (p._id || p.id) === pid));
+  }, [saree, id]);
+
   const handleAddToCart = async () => {
     if (!saree) return;
     setIsAdding(true);
@@ -51,6 +75,24 @@ const ProductDetail = () => {
   const handleBuyNow = () => {
     handleAddToCart();
     navigate('/cart');
+  };
+
+  const handleShare = async () => {
+    try {
+      const shareData = {
+        title: saree?.title || 'Saree',
+        text: saree?.description?.slice(0, 120) || 'Check out this saree!',
+        url: window.location.href,
+      };
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        alert('Link copied to clipboard');
+      }
+    } catch (e) {
+      console.error('Share failed', e);
+    }
   };
 
   const incrementQuantity = () => setQuantity(prev => prev + 1);
@@ -142,6 +184,52 @@ const ProductDetail = () => {
                   e.target.src = 'https://via.placeholder.com/600x800?text=Image+Not+Available';
                 }}
               />
+              <div className="absolute top-3 right-3 z-10 flex gap-2">
+                <button
+                  type="button"
+                  aria-label="Add to wishlist"
+                  className="bg-white/90 hover:bg-white text-rose-600 hover:text-rose-700 rounded-full p-2 shadow cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (!saree) return;
+                    const pid = saree._id || id;
+                    const list = readWishlist();
+                    const exists = list.some(p => (p._id || p.id) === pid);
+                    if (exists) {
+                      const next = list.filter(p => (p._id || p.id) !== pid);
+                      writeWishlist(next);
+                      setWishlisted(false);
+                      try { window.dispatchEvent(new Event('wishlist:updated')); } catch {}
+                    } else {
+                      const item = {
+                        _id: pid,
+                        title: saree.title,
+                        images: saree.images,
+                        price: Math.round(saree.mrp - (saree.mrp * (saree.discountPercent || 0) / 100)),
+                        mrp: saree.mrp,
+                        discountPercent: saree.discountPercent || 0,
+                      };
+                      const next = [item, ...list.filter((p) => (p._id || p.id) !== pid)];
+                      writeWishlist(next);
+                      setWishlisted(true);
+                      try { window.dispatchEvent(new Event('wishlist:updated')); } catch {}
+                      alert(`${saree.title} added to wishlist`);
+                    }
+                  }}
+                  title={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+                >
+                  <FaHeart className={wishlisted ? 'fill-current' : ''} />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Share"
+                  className="bg-white/90 hover:bg-white text-gray-700 hover:text-gray-900 rounded-full p-2 shadow cursor-pointer"
+                  onClick={(e) => { e.stopPropagation(); handleShare(); }}
+                  title="Share"
+                >
+                  <FaShareAlt />
+                </button>
+              </div>
               <div 
                 className="absolute bottom-4 right-4 bg-white bg-opacity-80 p-2 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                 onClick={(e) => {

@@ -18,6 +18,7 @@ import Address from '../pages/Address';
 import Search from '../pages/Search';
 import MobileBottomNav from '../components/MobileBottomNav';
 import { useEffect } from 'react';
+import Wishlist from '../pages/Wishlist';
 
 const isAuthenticated = () => {
   try {
@@ -74,6 +75,7 @@ const Router = () => {
           <Route path="product/:id" element={<ProductDetail />} />
           <Route path="about" element={<About />} />
           <Route path="contact" element={<Contact />} />
+          <Route path="wishlist" element={<Wishlist />} />
 
           {/* Private route(s) */}
           <Route path="cart" element={<RequireAuth><Cart /></RequireAuth>} />

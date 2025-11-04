@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 
@@ -80,9 +81,31 @@ const AccountIcon = ({ isActive }) => (
 
 const MobileBottomNav = () => {
   const { cartCount } = useCart();
+  const [wishlistCount, setWishlistCount] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
   
+  useEffect(() => {
+    const readWishlistCount = () => {
+      try {
+        const raw = localStorage.getItem('wishlist');
+        const list = raw ? JSON.parse(raw) : [];
+        setWishlistCount(Array.isArray(list) ? list.length : 0);
+      } catch {
+        setWishlistCount(0);
+      }
+    };
+    readWishlistCount();
+    const onStorage = (e) => { if (!e || e.key === 'wishlist') readWishlistCount(); };
+    const onCustom = () => readWishlistCount();
+    window.addEventListener('storage', onStorage);
+    window.addEventListener('wishlist:updated', onCustom);
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener('wishlist:updated', onCustom);
+    };
+  }, []);
+
   const handleHomeClick = (e) => {
     e.preventDefault();
     window.scrollTo(0, 0);
@@ -111,8 +134,13 @@ const MobileBottomNav = () => {
           to="/wishlist" 
           className={`flex flex-col items-center justify-center ${isActive('/wishlist') ? 'text-[#800020]' : 'text-gray-700'} transition-all duration-300 flex-1 group`}
         >
-          <div className={`p-1 rounded-full ${isActive('/wishlist') ? 'bg-gray-100' : 'group-hover:bg-gray-100'} transition-all duration-300`}>
+          <div className={`p-1 rounded-full ${isActive('/wishlist') ? 'bg-gray-100' : 'group-hover:bg-gray-100'} transition-all duration-300 relative`}>
             <WishlistIcon isActive={isActive('/wishlist')} />
+            {wishlistCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-[#800020] text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center">
+                {wishlistCount > 9 ? '9+' : wishlistCount}
+              </span>
+            )}
           </div>
           <span className="text-[10px] mt-0.5">WISHLIST</span>
         </Link>

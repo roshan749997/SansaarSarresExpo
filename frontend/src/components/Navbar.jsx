@@ -15,6 +15,7 @@ const Navbar = () => {
   const searchWrapRefDesktop = useRef(null);
   const navigate = useNavigate();
   const { cartCount } = useCart();
+  const [wishlistCount, setWishlistCount] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,6 +24,29 @@ const Navbar = () => {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const readWishlistCount = () => {
+      try {
+        const raw = localStorage.getItem('wishlist');
+        const list = raw ? JSON.parse(raw) : [];
+        setWishlistCount(Array.isArray(list) ? list.length : 0);
+      } catch {
+        setWishlistCount(0);
+      }
+    };
+    readWishlistCount();
+    const onStorage = (e) => {
+      if (!e || e.key === 'wishlist') readWishlistCount();
+    };
+    const onCustom = () => readWishlistCount();
+    window.addEventListener('storage', onStorage);
+    window.addEventListener('wishlist:updated', onCustom);
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener('wishlist:updated', onCustom);
+    };
   }, []);
 
   // Check authentication status - Using in-memory state instead of localStorage
@@ -263,6 +287,11 @@ const Navbar = () => {
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-[#800020] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {wishlistCount > 9 ? '9+' : wishlistCount}
+                  </span>
+                )}
               </Link>
               <Link to="/cart" className="p-2 text-gray-700 hover:text-[#800020] relative">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
