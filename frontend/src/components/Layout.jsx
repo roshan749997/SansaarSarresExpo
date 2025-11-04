@@ -17,8 +17,10 @@ const Layout = () => {
         <Outlet />
       </main>
 
-      {/* Footer */}
-      <Footer />
+      {/* Footer - Hidden on mobile, shown on md screens and up */}
+      <div className="hidden md:block">
+        <Footer />
+      </div>
     </div>
   );
 };
