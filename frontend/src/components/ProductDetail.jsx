@@ -256,7 +256,7 @@ const ProductDetail = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <span className="text-gray-700">Free shipping on orders over ₹5,000</span>
+                <span className="text-gray-700">Free shipping on orders over ₹1,000</span>
               </div>
             </div>
           </div>

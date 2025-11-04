@@ -120,8 +120,8 @@ function Cart() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Shipping</span>
-                  <span className={cartTotal >= 5000 ? "text-green-600" : "text-gray-600"}>
-                    {cartTotal >= 5000 ? 'Free' : '₹99'}
+                  <span className={cartTotal >= 1000 ? "text-green-600" : "text-gray-600"}>
+                    {cartTotal >= 1000 ? 'Free' : '₹99'}
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -131,7 +131,7 @@ function Cart() {
                 <div className="border-t border-gray-200 my-2"></div>
                 <div className="flex justify-between text-lg font-semibold">
                   <span>Total</span>
-                  <span>₹{(cartTotal + (cartTotal >= 5000 ? 0 : 99) + Math.round(cartTotal * 0.05)).toLocaleString()}</span>
+                  <span>₹{(cartTotal + (cartTotal >= 1000 ? 0 : 99) + Math.round(cartTotal * 0.05)).toLocaleString()}</span>
                 </div>
               </div>
               
