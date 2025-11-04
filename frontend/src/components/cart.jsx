@@ -61,13 +61,13 @@ function Cart() {
                     src={item.image}
                     alt={item.name}
                     className="min-w-full min-h-full object-contain"
-                    onClick={() => navigate(`/banarasi/${item.id}`)}
+                    onClick={() => navigate(`/product/${item.id}`)}
                   />
                 </div>
                 <div className="ml-4 flex-1">
                   <h3 
                     className="text-lg font-medium text-gray-800 cursor-pointer hover:text-amber-600"
-                    onClick={() => navigate(`/banarasi/${item.id}`)}
+                    onClick={() => navigate(`/product/${item.id}`)}
                   >
                     {item.name}
                   </h3>

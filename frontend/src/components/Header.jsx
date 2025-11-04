@@ -208,16 +208,20 @@ const Header = () => {
           
           {/* Subcategories */}
           {activeCategory && (
-            <div className="bg-white border-t border-gray-200 mt-2 z-50 relative">
-              <div className="sticky top-16 z-50 bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between">
-                <h3 className="text-sm font-medium text-gray-700">
-                  {categories.find(cat => cat.name === activeCategory)?.name} Categories
+            <div className="fixed inset-0 z-50 bg-white overflow-y-auto pt-20">
+              {/* Close button at top */}
+              <div className="fixed top-16 left-0 right-0 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between z-50">
+                <h3 className="text-base font-medium text-gray-800">
+                  {categories.find(cat => cat.name === activeCategory)?.name}
                 </h3>
                 <button 
                   onClick={() => setActiveCategory(null)}
-                  className="text-rose-500 text-sm font-medium hover:text-rose-600"
+                  className="p-2 -mr-2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                  aria-label="Close menu"
                 >
-                  Close
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
                 </button>
               </div>
               <div className="relative max-h-[calc(100vh-180px)] overflow-y-auto">
