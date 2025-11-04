@@ -1,25 +1,25 @@
 import React from 'react';
 import Collections from '../components/Collections';
 import MobileBottomNav from '../components/MobileBottomNav';
+import HeroSlider from '../components/HeroSlider';
 
 const Home = () => {
   return (
     <div className="min-h-screen pt-0 pb-16 md:pb-0">
-      {/* Hero Section with Banner */}
-      <section className="w-full m-0 p-0">
-        <picture>
-          <source 
-            media="(max-width: 767px)" 
-            srcSet="https://res.cloudinary.com/duc9svg7w/image/upload/v1762252971/Effortlessly_smoothen_every_fabric_20251031_231634_0000_1_dmcl0s.png" 
-          />
-          <img 
-            src="https://res.cloudinary.com/duc9svg7w/image/upload/v1761978463/Effortlessly_smoothen_every_fabric_20251101_014257_0000_pmkwyh.png" 
-            alt="SareeSansaar - Premium Saree Collection"
-            className="w-full h-auto object-cover block"
-            loading="lazy"
-          />
-        </picture>
-      </section>
+      {/* Hero Slider */}
+      <HeroSlider
+        slides={[
+          {
+            desktop: 'https://res.cloudinary.com/duc9svg7w/image/upload/v1761978463/Effortlessly_smoothen_every_fabric_20251101_014257_0000_pmkwyh.png',
+            alt: 'SareeSansaar - Premium Saree Collection',
+          },
+          {
+            desktop: 'https://res.cloudinary.com/duc9svg7w/image/upload/v1762255943/Green_and_Gold_Traditional_Fashion_Sale_Presentation_20251101_013751_0000_jy3n3g.png',
+            alt: 'Festive Offer - SareeSansaar',
+          },
+        ]}
+        mobileSrc="https://res.cloudinary.com/duc9svg7w/image/upload/v1762277481/Beige_And_Brown_Luxury_Shopping_Guide_Instagram_Post_20251104_225913_0000_uskdch.png"
+      />
 
       {/* Featured Collections */}
       <Collections />
