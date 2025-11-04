@@ -62,6 +62,7 @@ export default function AddressForm() {
   });
 
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showForm, setShowForm] = useState(true);
   const { cart, cartTotal: total } = useCart();
 
   // Calculate price details
@@ -190,7 +191,12 @@ export default function AddressForm() {
       setHasSavedAddress(true);
       setShowSuccess(true);
       setEditMode(false);
-      alert('Address saved successfully!');
+      setShowForm(false); // Hide the form after successful save
+      
+      // Auto-hide success message after 3 seconds
+      setTimeout(() => {
+        setShowSuccess(false);
+      }, 3000);
     } catch (err) {
       console.error(err);
       alert('Failed to save address. Please sign in and try again.');
@@ -212,6 +218,7 @@ export default function AddressForm() {
         if (doc && doc._id) {
           setAddressId(doc._id);
           setHasSavedAddress(true);
+          setShowForm(false); // Hide form if address exists
           setEditMode(false);
           setFormData({
             name: doc.fullName || '',
@@ -225,9 +232,12 @@ export default function AddressForm() {
             alternatePhone: doc.alternatePhone || '',
             addressType: (doc.addressType || 'Home').toLowerCase(),
           });
+        } else {
+          setShowForm(true); // Show form if no address exists
         }
       } catch (e) {
         // no-op if unauthenticated
+        setShowForm(true); // Show form if there's an error
       } finally {
         setLoadingAddress(false);
       }
@@ -235,11 +245,50 @@ export default function AddressForm() {
     load();
   }, []);
 
+  const handleEditAddress = () => {
+    setShowForm(true);
+    setEditMode(true);
+  };
+
+  const handleDeleteAddress = async () => {
+    if (!window.confirm('Are you sure you want to delete this address?')) {
+      return;
+    }
+    
+    try {
+      setLoadingAddress(true);
+      await deleteAddressById(addressId);
+      // Reset form and show empty form
+      setFormData({
+        name: '',
+        mobile: '',
+        pincode: '',
+        locality: '',
+        address: '',
+        city: '',
+        state: '',
+        landmark: '',
+        alternatePhone: '',
+        addressType: 'home'
+      });
+      setAddressId(null);
+      setHasSavedAddress(false);
+      setShowForm(true);
+      setEditMode(true);
+    } catch (error) {
+      console.error('Error deleting address:', error);
+      alert('Failed to delete address. Please try again.');
+    } finally {
+      setLoadingAddress(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <form onSubmit={handleSaveAddress} className="bg-white shadow-sm rounded">
+          {showForm ? (
+            <form onSubmit={handleSaveAddress} className="bg-white shadow-sm rounded">
             <div className="bg-blue-600 text-white p-4 flex items-center gap-3">
               <span>1</span>
               <span className="font-medium">DELIVERY ADDRESS</span>
@@ -510,7 +559,56 @@ export default function AddressForm() {
                 </div>
               )}
             </div>
-          </form>
+            </form>
+          ) : (
+            <div className="bg-white shadow-sm rounded">
+              <div className="bg-blue-600 text-white p-4 flex items-center gap-3">
+                <span>1</span>
+                <span className="font-medium">DELIVERY ADDRESS</span>
+              </div>
+              <div className="p-6">
+                <div className="mb-4 p-4 border border-green-200 bg-green-50 rounded">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-medium">{formData.name}</h3>
+                      <p className="text-gray-700">
+                        {formData.address}, {formData.locality},<br />
+                        {formData.city}, {formData.state} - {formData.pincode}
+                      </p>
+                      <p className="mt-2">
+                        <span className="font-medium">Mobile:</span> {formData.mobile}
+                        {formData.alternatePhone && `, ${formData.alternatePhone}`}
+                      </p>
+                      {formData.landmark && (
+                        <p><span className="font-medium">Landmark:</span> {formData.landmark}</p>
+                      )}
+                    </div>
+                    <div className="flex flex-col items-end gap-2">
+                      <div className="flex gap-3">
+                        <button
+                          type="button"
+                          onClick={handleEditAddress}
+                          className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                        >
+                          EDIT
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleDeleteAddress}
+                          className="text-red-600 hover:text-red-800 text-sm font-medium"
+                        >
+                          DELETE
+                        </button>
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {formData.addressType.toUpperCase()} ADDRESS
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="lg:col-span-1">
