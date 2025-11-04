@@ -138,8 +138,14 @@ const Navbar = () => {
     >
       <div className="w-full px-0 sm:px-1 md:px-2 lg:px-3">
         <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Empty div to maintain layout */}
-          <div className="flex-1"></div>
+          {/* Logo/Brand */}
+          <Link to="/" className="flex-shrink-0 ml-4 sm:ml-5 md:ml-6 lg:ml-8">
+            <img 
+              src="/src/assets/SareeLogo1.png" 
+              alt="SareeSansaar Logo" 
+              className="h-10 sm:h-12 md:h-14 w-auto hover:scale-105 transition-transform duration-300"
+            />
+          </Link>
 
           {/* Mobile Search (visible only on small screens) */}
           <div className="flex-1 min-w-0 px-2 md:hidden">
