@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { FaShoppingCart, FaRupeeSign, FaArrowLeft, FaStar, FaRegStar, FaBolt, FaSpinner } from "react-icons/fa";
+import { FaShoppingCart, FaRupeeSign, FaArrowLeft, FaStar, FaRegStar, FaBolt, FaSpinner, FaTimes, FaExpand } from "react-icons/fa";
 import { useCart } from "../context/CartContext";
 import { fetchSareeById } from "../services/api";
 
@@ -13,6 +13,7 @@ const ProductDetail = () => {
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -94,23 +95,63 @@ const ProductDetail = () => {
   const sellingPrice = Math.round(saree.mrp - (saree.mrp * (saree.discountPercent || 0) / 100));
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20 sm:pb-4">
+    <div className="min-h-screen bg-gray-50 pb-20 sm:pb-4 relative">
+      {/* Image Modal */}
+      {isImageModalOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4"
+          onClick={() => setIsImageModalOpen(false)}
+        >
+          <div className="relative max-w-4xl w-full max-h-[90vh] flex items-center justify-center">
+            <button 
+              className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-10"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsImageModalOpen(false);
+              }}
+            >
+              <FaTimes className="w-8 h-8" />
+            </button>
+            <img
+              src={saree.images?.image1 || 'https://via.placeholder.com/600x800?text=Image+Not+Available'}
+              alt={saree.title}
+              className="max-w-full max-h-[80vh] object-contain"
+              onClick={(e) => e.stopPropagation()}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = 'https://via.placeholder.com/600x800?text=Image+Not+Available';
+              }}
+            />
+          </div>
+        </div>
+      )}
 
       <div className="bg-white rounded-xl shadow-lg overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
           
           {/* Image Section */}
-          <div className="w-full overflow-hidden rounded-xl bg-gray-50">
+          <div className="w-full overflow-hidden rounded-xl bg-gray-50 group relative">
             <div className="relative pt-[100%] md:pt-[90%] overflow-hidden">
               <img
                 src={saree.images?.image1 || 'https://via.placeholder.com/600x800?text=Image+Not+Available'}
                 alt={saree.title}
-                className="absolute top-0 left-0 w-full h-full object-contain"
+                className="absolute top-0 left-0 w-full h-full object-contain cursor-zoom-in"
+                onClick={() => setIsImageModalOpen(true)}
                 onError={(e) => {
                   e.target.onerror = null;
                   e.target.src = 'https://via.placeholder.com/600x800?text=Image+Not+Available';
                 }}
               />
+              <div 
+                className="absolute bottom-4 right-4 bg-white bg-opacity-80 p-2 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsImageModalOpen(true);
+                }}
+                title="Click to enlarge"
+              >
+                <FaExpand className="text-gray-700" />
+              </div>
             </div>
           </div>
 
