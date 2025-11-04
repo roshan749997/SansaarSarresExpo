@@ -1,9 +1,10 @@
 import React from 'react';
 import Collections from '../components/Collections';
+import MobileBottomNav from '../components/MobileBottomNav';
 
 const Home = () => {
   return (
-    <div className="min-h-screen pt-0">
+    <div className="min-h-screen pt-0 pb-16 md:pb-0">
       {/* Hero Section with Banner */}
       <section className="w-full pt-0">
         <img 
@@ -47,6 +48,9 @@ const Home = () => {
     </div>
   </div>
 </section>
+      
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav />
     </div>
   );
 };

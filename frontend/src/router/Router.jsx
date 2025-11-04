@@ -16,7 +16,8 @@ import ProductList from '../components/ProductList';
 import Cart from '../components/cart';
 import Address from '../pages/Address';
 import Search from '../pages/Search';
-
+import MobileBottomNav from '../components/MobileBottomNav';
+import { useEffect } from 'react';
 
 const isAuthenticated = () => {
   try {
@@ -43,10 +44,20 @@ const RedirectIfAuth = ({ children }) => {
 };
 
 const Router = () => {
+  const location = useLocation();
+  const hideBottomNav = location.pathname.includes('/product/') || 
+                       location.pathname === '/products' || 
+                       location.pathname.startsWith('/category/');
+
   return (
     <CartProvider>
       <Routes>
-        <Route path="/" element={<Layout />}>
+        <Route path="/" element={
+          <>
+            <Layout />
+            {!hideBottomNav && <MobileBottomNav />}
+          </>
+        }>
           {/* Public routes */}
           <Route index element={<Home />} />
           <Route path="shop" element={<Shop />} />
