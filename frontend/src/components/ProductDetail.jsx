@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { FaShoppingCart, FaRupeeSign, FaArrowLeft, FaStar, FaRegStar, FaBolt, FaSpinner, FaTimes, FaExpand, FaHeart, FaShareAlt } from "react-icons/fa";
+import { FaShoppingCart, FaRupeeSign, FaArrowLeft, FaStar, FaRegStar, FaBolt, FaSpinner, FaTimes, FaExpand, FaHeart, FaRegHeart, FaShareAlt } from "react-icons/fa";
 import { useCart } from "../context/CartContext";
 import { fetchSareeById } from "../services/api";
 
@@ -188,7 +188,9 @@ const ProductDetail = () => {
                 <button
                   type="button"
                   aria-label="Add to wishlist"
-                  className="bg-white/90 hover:bg-white text-rose-600 hover:text-rose-700 rounded-full p-2 shadow cursor-pointer"
+                  className={(wishlisted
+                    ? 'bg-rose-600 text-white hover:bg-rose-700 border border-rose-600'
+                    : 'bg-white text-black hover:bg-gray-50 border border-black') + ' rounded-full p-2 shadow cursor-pointer'}
                   onClick={(e) => {
                     e.stopPropagation();
                     if (!saree) return;
@@ -218,7 +220,7 @@ const ProductDetail = () => {
                   }}
                   title={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
                 >
-                  <FaHeart className={wishlisted ? 'fill-current' : ''} />
+                  {wishlisted ? <FaHeart className="fill-current" /> : <FaRegHeart />}
                 </button>
                 <button
                   type="button"
