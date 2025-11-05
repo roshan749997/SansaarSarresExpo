@@ -18,7 +18,7 @@ const Home = () => {
             alt: 'Festive Offer - SareeSansaar',
           },
         ]}
-        mobileSrc="https://res.cloudinary.com/duc9svg7w/image/upload/v1762277481/Beige_And_Brown_Luxury_Shopping_Guide_Instagram_Post_20251104_225913_0000_uskdch.png"
+        mobileSrc="https://res.cloudinary.com/duc9svg7w/image/upload/v1762318223/Beige_And_Brown_Luxury_Shopping_Guide_Instagram_Post_20251104_225913_0000_tbyvtj.png"
       />
 
       {/* Featured Collections */}
