@@ -4,7 +4,16 @@ import { getMyAddress, getMyOrders } from '../services/api';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function FlipkartAccountSettings() {
-  const [activeSection, setActiveSection] = useState('profile');
+  const initialTab = (() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const tab = params.get('tab');
+      return tab && ['orders', 'profile', 'addresses'].includes(tab) ? tab : 'profile';
+    } catch {
+      return 'profile';
+    }
+  })();
+  const [activeSection, setActiveSection] = useState(initialTab);
   const [expandedMenu, setExpandedMenu] = useState('account');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -137,7 +146,7 @@ export default function FlipkartAccountSettings() {
       ) : (
         <div className="flex flex-col lg:flex-row w-full min-h-screen">
           {/* Mobile Header */}
-          <div className="lg:hidden bg-white shadow-md px-4 py-4 flex items-center justify-between sticky top-0 z-50">
+          <div className="lg:hidden bg-white shadow-md px-4 py-4 flex items-center justify-between sticky z-40" style={{ top: 'var(--app-header-height, 0px)' }}>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#800020] to-[#a0002a] flex items-center justify-center text-white text-lg font-bold shadow-lg">
                 {user.firstName.charAt(0)}
@@ -239,6 +248,28 @@ export default function FlipkartAccountSettings() {
           {/* Main Content */}
           <div className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
             <div className="max-w-5xl mx-auto">
+              <div className="lg:hidden mb-4">
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    onClick={() => handleSectionChange('orders')}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium ${activeSection === 'orders' ? 'bg-[#800020] text-white' : 'bg-gray-100 text-gray-700'}`}
+                  >
+                    Your Orders
+                  </button>
+                  <button
+                    onClick={() => handleSectionChange('profile')}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium ${activeSection === 'profile' ? 'bg-[#800020] text-white' : 'bg-gray-100 text-gray-700'}`}
+                  >
+                    Profile
+                  </button>
+                  <button
+                    onClick={() => handleSectionChange('addresses')}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium ${activeSection === 'addresses' ? 'bg-[#800020] text-white' : 'bg-gray-100 text-gray-700'}`}
+                  >
+                    Addresses
+                  </button>
+                </div>
+              </div>
               {activeSection === 'profile' && (
                 <div className="space-y-4 sm:space-y-6">
                   {/* Personal Information */}
