@@ -116,3 +116,36 @@ export async function adminListAddresses(req, res) {
     return res.status(500).json({ message: 'Failed to list addresses', error: err.message });
   }
 }
+
+export async function updateProduct(req, res) {
+  try {
+    const { id } = req.params;
+    const { mrp, discountPercent } = req.body;
+
+    if (typeof mrp === 'undefined' && typeof discountPercent === 'undefined') {
+      return res.status(400).json({ message: 'At least one field (mrp or discountPercent) is required' });
+    }
+
+    const updates = {};
+    if (typeof mrp !== 'undefined') {
+      updates.mrp = Number(mrp);
+    }
+    if (typeof discountPercent !== 'undefined') {
+      updates.discountPercent = Number(discountPercent) || 0;
+    }
+
+    const product = await Product.findByIdAndUpdate(
+      id,
+      { $set: updates },
+      { new: true, runValidators: true }
+    );
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    return res.json(product);
+  } catch (err) {
+    return res.status(500).json({ message: 'Failed to update product', error: err.message });
+  }
+}
