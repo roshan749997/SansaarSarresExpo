@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../utils/api';
 import { getMyAddress, getMyOrders } from '../services/api';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { FiSettings } from 'react-icons/fi';
 
 export default function FlipkartAccountSettings() {
   const initialTab = (() => {
@@ -24,6 +25,7 @@ export default function FlipkartAccountSettings() {
     mobile: '',
     gender: 'male'
   });
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [addresses, setAddresses] = useState([]);
   const [loadingAddresses, setLoadingAddresses] = useState(false);
@@ -51,6 +53,7 @@ export default function FlipkartAccountSettings() {
       const userData = await api.me();
       const [firstName, ...lastNameParts] = userData.user?.name?.split(' ') || [];
       const lastName = lastNameParts.join(' ');
+      const adminStatus = localStorage.getItem('auth_is_admin') === 'true';
       
       setUser({
         firstName: firstName || '',
@@ -59,6 +62,7 @@ export default function FlipkartAccountSettings() {
         mobile: userData.user?.phone || '',
         gender: userData.user?.gender || 'male'
       });
+      setIsAdmin(adminStatus);
     } catch (error) {
       console.error('Error fetching user data:', error);
     } finally {
@@ -141,7 +145,7 @@ export default function FlipkartAccountSettings() {
     setMobileMenuOpen(false);
   };
 
-  const MenuItem = ({ icon, label, section, isLogout = false }) => (
+  const MenuItem = ({ icon, label, section, isLogout = false, isAdmin = false }) => (
     <div 
       onClick={isLogout ? handleLogout : () => handleSectionChange(section)}
       className={`flex items-center justify-between px-4 lg:px-6 py-3.5 cursor-pointer transition-all duration-200 rounded-lg mx-2 lg:mx-3 mb-1 ${
@@ -149,6 +153,8 @@ export default function FlipkartAccountSettings() {
           ? 'bg-gradient-to-r from-[#800020] to-[#a0002a] text-white shadow-md' 
           : isLogout
           ? 'hover:bg-red-50 text-red-600'
+          : isAdmin
+          ? 'bg-blue-50 text-blue-700 hover:bg-blue-100'
           : 'text-gray-700 hover:bg-gray-50'
       }`}
     >
@@ -158,6 +164,17 @@ export default function FlipkartAccountSettings() {
       </div>
       {!isLogout && <span className={activeSection === section ? 'text-white' : 'text-gray-400'}>›</span>}
     </div>
+  );
+
+  const AdminButton = () => (
+    <Link to="/admin" className="block">
+      <MenuItem
+        icon={<FiSettings className="w-5 h-5" />}
+        label="Admin Dashboard"
+        section="admin"
+        isAdmin={true}
+      />
+    </Link>
   );
 
   return (
@@ -213,7 +230,7 @@ export default function FlipkartAccountSettings() {
             )}
 
             {/* User Profile - Desktop only */}
-            <div className="hidden lg:block p-6 border-b bg-gradient-to-r from-red-50 to-rose-50">
+            <div className="hidden lg:block p-6 border-b bg-gradient-to-r from-gray-50 to-gray-100">
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#800020] to-[#a0002a] flex items-center justify-center text-white text-2xl font-bold shadow-lg ring-4 ring-red-100">
                   {user.firstName.charAt(0)}
@@ -256,6 +273,8 @@ export default function FlipkartAccountSettings() {
                 label="Manage Addresses"
                 section="addresses"
               />
+
+              {isAdmin && <AdminButton />}
 
               <div className="my-4 mx-5 border-t border-gray-200"></div>
 
