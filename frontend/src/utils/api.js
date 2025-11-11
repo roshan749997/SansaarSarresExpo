@@ -3,10 +3,11 @@ const API_BASE_URL = `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:50
 async function request(path, options = {}) {
   const url = `${API_BASE_URL}${path}`;
   const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+  const isCookieSession = token === 'cookie' || (token && !token.includes('.'));
   const headers = {
     'Content-Type': 'application/json',
     ...(options.headers || {}),
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...(!isCookieSession && token ? { Authorization: `Bearer ${token}` } : {}),
   };
   const res = await fetch(url, { ...options, headers, credentials: 'include' });
   const text = await res.text();
@@ -20,7 +21,14 @@ export const api = {
   signin: (payload) => request('/auth/signin', { method: 'POST', body: JSON.stringify(payload) }),
   signup: (payload) => request('/auth/signup', { method: 'POST', body: JSON.stringify(payload) }),
   forgotPassword: (payload) => request('/auth/forgot-password', { method: 'POST', body: JSON.stringify(payload) }),
-  me: () => request('/auth/me', { method: 'GET' }),
+  me: async () => {
+    try {
+      return await request('/me', { method: 'GET' });
+    } catch (e) {
+      // Fallback for header-token based auth
+      return await request('/auth/me', { method: 'GET' });
+    }
+  },
   // Cart endpoints
   getCart: () => request('/cart', { method: 'GET' }),
   addToCart: ({ productId, quantity = 1 }) => request('/cart/add', { method: 'POST', body: JSON.stringify({ productId, quantity }) }),
@@ -37,9 +45,10 @@ export const api = {
     updateOrderStatus: async (id, status) => {
       const base = `${API_BASE_URL}`;
       const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+      const isCookieSession = token === 'cookie' || (token && !token.includes('.'));
       const headers = {
         'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(!isCookieSession && token ? { Authorization: `Bearer ${token}` } : {}),
       };
       const payloadVariants = [ { status }, { orderStatus: status } ];
       const opts = (method, body) => ({ method, headers, body: JSON.stringify(body), credentials: 'include' });

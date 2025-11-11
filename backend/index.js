@@ -2,6 +2,9 @@ import { configDotenv } from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import passport from './config/passport.js';
+
 import authRoutes from './routes/auth.routes.js';
 import headerRoutes from './routes/header.routes.js';
 import productRoutes from './routes/product.routes.js';
@@ -12,6 +15,7 @@ import ordersRoutes from './routes/orders.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 
 import connectDB from './config/DataBaseConnection.js';
+import cookieJwtAuth from './middleware/authMiddleware.js';
 
 configDotenv();       
 
@@ -19,15 +23,39 @@ console.log('Razorpay env loaded:', Boolean(process.env.RAZORPAY_KEY_ID), Boolea
 
 const server = express();
 
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+// Needed when running behind a proxy (Render) to correctly set secure cookies
+server.set('trust proxy', 1);
 server.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: FRONTEND_URL,
   credentials: true,
 }));
 
 server.use(express.json());
 server.use(cookieParser());
 
+// Sessions are needed for Passport OAuth flow (not for JWT auth)
+server.use(
+  session({
+    secret: process.env.SESSION_SECRET || process.env.JWT_SECRET || 'dev_session_secret_change_me',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      sameSite: (process.env.NODE_ENV === 'production' || String(process.env.BACKEND_URL || '').startsWith('https://')) ? 'none' : 'lax',
+      secure: (process.env.NODE_ENV === 'production' || String(process.env.BACKEND_URL || '').startsWith('https://')),
+    },
+  })
+);
+server.use(passport.initialize());
+server.use(passport.session());
+
 server.get('/api/health', (req, res) => res.json({ ok: true }));
+// Cookie-JWT protected current user info (Google/local unified)
+server.get('/api/me', cookieJwtAuth, (req, res) => {
+  const user = req.user;
+  res.json({ user });
+});
+
 server.use('/api/auth', authRoutes);
 server.use('/api/header', headerRoutes);
 server.use('/api/products', productRoutes);

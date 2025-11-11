@@ -19,6 +19,8 @@ import Search from '../pages/Search';
 import MobileBottomNav from '../components/MobileBottomNav';
 import { useEffect } from 'react';
 import Wishlist from '../pages/Wishlist';
+import AuthSuccess from '../pages/AuthSuccess';
+import AuthFailure from '../pages/AuthFailure';
 import AdminDashboard from '../pages/admin/AdminDashboard';
 import AdminProducts from '../pages/admin/AdminProducts';
 import AdminOrders from '../pages/admin/AdminOrders';
@@ -111,6 +113,8 @@ const Router = () => {
         <Route path="signin" element={<RedirectIfAuth><SignIn /></RedirectIfAuth>} />
         <Route path="signup" element={<RedirectIfAuth><SignUp /></RedirectIfAuth>} />
         <Route path="forgot-password" element={<ForgotPassword />} />
+        <Route path="auth/success" element={<AuthSuccess />} />
+        <Route path="auth/failure" element={<AuthFailure />} />
         {/* Admin routes */}
         <Route path="admin" element={<RequireAdmin><AdminLayout /></RequireAdmin>}>
           <Route index element={<AdminDashboard />} />
