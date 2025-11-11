@@ -29,7 +29,7 @@ export const api = {
   admin: {
     stats: () => request('/admin/stats', { method: 'GET' }),
     createProduct: (payload) => request('/admin/products', { method: 'POST', body: JSON.stringify(payload) }),
-    updateProduct: (id, payload) => request(`/admin/products/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
+    updateProduct: (id, payload) => request(`/admin/products/${id}`, { method: 'PATCH', body: JSON.stringify(payload) }),
     listProducts: () => request('/admin/products', { method: 'GET' }),
     deleteProduct: (id) => request(`/admin/products/${id}`, { method: 'DELETE' }),
     listOrders: () => request('/admin/orders', { method: 'GET' }),

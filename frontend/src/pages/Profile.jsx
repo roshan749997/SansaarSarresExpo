@@ -348,31 +348,6 @@ export default function FlipkartAccountSettings() {
                           />
                         </div>
                       </div>
-                      <div>
-                        <div className="text-sm font-medium text-gray-700 mb-3">Your Gender</div>
-                        <div className="flex flex-wrap gap-4">
-                          <label className="flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border border-gray-200 hover:border-[#800020] transition-colors">
-                            <input 
-                              type="radio" 
-                              name="gender" 
-                              checked={user.gender === 'male'}
-                              readOnly
-                              className="w-4 h-4 text-[#800020]"
-                            />
-                            <span className="text-sm text-gray-700 font-medium">Male</span>
-                          </label>
-                          <label className="flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border border-gray-200 hover:border-[#800020] transition-colors">
-                            <input 
-                              type="radio" 
-                              name="gender" 
-                              checked={user.gender === 'female'}
-                              readOnly
-                              className="w-4 h-4 text-[#800020]"
-                            />
-                            <span className="text-sm text-gray-700 font-medium">Female</span>
-                          </label>
-                        </div>
-                      </div>
                     </div>
                   </div>
 
