@@ -22,11 +22,25 @@ console.log('Razorpay env loaded:', Boolean(process.env.RAZORPAY_KEY_ID), Boolea
 
 const server = express();
 
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 // Needed when running behind a proxy (Render) to correctly set secure cookies
 server.set('trust proxy', 1);
+
+// Centralized CORS: allow specific dev/prod origins only
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'https://sarees-frontend.onrender.com',
+  'https://sarees-jwhn.onrender.com',
+];
+
 server.use(cors({
-  origin: FRONTEND_URL,
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    console.log('CORS BLOCKED:', origin);
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
 }));
 

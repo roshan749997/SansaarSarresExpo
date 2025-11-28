@@ -86,6 +86,17 @@ const Header = () => {
         { name: 'GEOMETRIC PRINTED SAREES', path: '/category/printed-sarees/geometric-printed-sarees' }
       ]
     },
+    { 
+      name: 'JEWELLERY', 
+      path: '/category/jewellery',
+      subcategories: [
+        { name: 'NECKLACES', path: '/category/jewellery/necklaces' },
+        { name: 'EARRINGS', path: '/category/jewellery/earrings' },
+        { name: 'BRACELETS', path: '/category/jewellery/bracelets' },
+        { name: 'RINGS', path: '/category/jewellery/rings' },
+        { name: 'BANGLES', path: '/category/jewellery/bangles' }
+      ]
+    },
   ];
 
   // Close dropdown when clicking outside

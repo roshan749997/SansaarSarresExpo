@@ -2,21 +2,6 @@ import { Category } from '../models/Category.js';
 import { Product } from '../models/product.js';
 
 export const getHeaderData = async (req, res) => {
-  // Set CORS headers
-  const allowedOrigins = [
-    'https://sarees-frontend.onrender.com',
-    'https://sarees-jwhn.onrender.com',
-    'http://localhost:5173',
-    'http://localhost:5174'
-  ];
-  
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   try {
     // Get all categories for the navigation
     const categories = await Category.find({}, 'name slug -_id').sort({ name: 1 });
