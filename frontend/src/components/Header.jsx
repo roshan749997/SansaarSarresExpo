@@ -90,7 +90,7 @@ const Header = () => {
       name: 'JEWELLERY', 
       path: '/category/jewellery',
       subcategories: [
-        { name: 'NECKLACES', path: '/category/jewellery/necklaces' },
+        { name: 'NECKLACE', path: '/category/jewellery/necklace' },
         { name: 'EARRINGS', path: '/category/jewellery/earrings' },
         { name: 'BRACELETS', path: '/category/jewellery/bracelets' },
         { name: 'RINGS', path: '/category/jewellery/rings' },

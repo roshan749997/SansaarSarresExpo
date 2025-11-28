@@ -31,6 +31,7 @@ const allowedOrigins = [
   'http://localhost:5174',
   'https://sarees-frontend.onrender.com',
   'https://sarees-jwhn.onrender.com',
+  'https://sareesansaar-1.onrender.com',
 ];
 
 server.use(cors({
@@ -42,6 +43,8 @@ server.use(cors({
     return callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
 }));
 
 server.use(express.json());
