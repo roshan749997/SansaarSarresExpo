@@ -27,11 +27,12 @@ server.set('trust proxy', 1);
 
 // Centralized CORS: allow specific dev/prod origins only
 const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:5174',
-  'https://sarees-frontend.onrender.com',
-  'https://sarees-jwhn.onrender.com',
-  'https://sareesansaar-1.onrender.com',
+  // 'http://localhost:5173',
+  https://saarisanskar.in/,
+  // 'http://localhost:5174',
+  // 'https://sarees-frontend.onrender.com',
+  // 'https://sarees-jwhn.onrender.com',
+  // 'https://sareesansaar-1.onrender.com',
   'https://sareesansaaar-1.onrender.com', // Frontend URL from screenshot
 ];
 
