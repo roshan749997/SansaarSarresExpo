@@ -167,6 +167,8 @@ const SignIn = () => {
                 <button
                   type="button"
                   onClick={() => {
+                    console.log(".................................")
+                    console.log(import.meta.env.VITE_BACKEND_URL)
                     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
                     window.location.href = `${BACKEND_URL}/api/auth/google`;
                   }}

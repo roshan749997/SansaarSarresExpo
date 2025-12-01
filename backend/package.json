@@ -10,8 +10,8 @@
     "node": ">=18 <21"
   },
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "nodemon index.js",
+    "dev": "nodemon --env-file=.env index.js",
     "test": "echo \"no tests\" && exit 0"
   },
   "devDependencies": {

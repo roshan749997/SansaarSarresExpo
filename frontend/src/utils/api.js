@@ -1,32 +1,8 @@
 // Auto-detect backend URL in production
-const getBackendUrl = () => {
-  // If explicitly set via env variable, use it
-  if (import.meta.env.VITE_BACKEND_URL) {
-    return import.meta.env.VITE_BACKEND_URL;
-  }
-  
-  // In production (Render), try to detect backend URL
-  if (typeof window !== 'undefined') {
-    const hostname = window.location.hostname;
-    // If frontend is on Render, try common backend URL patterns
-    if (hostname.includes('onrender.com')) {
-      // Try to construct backend URL from frontend URL
-      const possibleBackends = [
-        'https://sarees-backend.onrender.com',
-        'https://sareesansaar-backend.onrender.com',
-        'https://sareesansaaar-1.onrender.com', // Based on screenshot URL
-      ];
-      
-      console.warn('VITE_BACKEND_URL not set. Please set it in Render environment variables.');
-      return possibleBackends[0] || 'http://localhost:5000';
-    }
-  }
-  
-  // Default to localhost for development
-  return 'http://localhost:5000';
-};
 
-const API_BASE_URL = `${getBackendUrl()}/api`;
+
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;
+console.log("API_BASE_URL", API_BASE_URL);
 
 async function request(path, options = {}) {
   const url = `${API_BASE_URL}${path}`;
