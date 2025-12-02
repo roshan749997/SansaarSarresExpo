@@ -23,33 +23,50 @@ router.get('/me', auth, async (req, res) => {
   }
 });
 
-// Google OAuth2
+/* ------------------------------------------
+   GOOGLE OAUTH 2.0 FIXED CONFIGURATION
+--------------------------------------------- */
+
+// FRONTEND that user should be redirected to AFTER login  
+// (Production + Local supported)
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+
+// JWT used by Google login
 const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_change_me';
 
-router.get('/google',
-  passport.authenticate('google', { scope: ['profile', 'email'], session: false })
+// 🔹 Step 1: Google Login (Triggers Google Consent Screen)
+router.get(
+  '/google',
+  passport.authenticate('google', {
+    scope: ['profile', 'email'],
+    session: false,
+  })
 );
 
+// 🔹 Step 2: Google Callback (this MUST match GOOGLE_CALLBACK_URL)
 router.get(
   '/google/callback',
   passport.authenticate('google', {
     failureRedirect: `${FRONTEND_URL}/auth/failure`,
-    session: false
+    session: false,
   }),
   async (req, res) => {
     try {
       const user = req.user;
+
+      // Create JWT token
       const token = jwt.sign(
         { id: String(user._id), email: user.email, isAdmin: !!user.isAdmin },
         JWT_SECRET,
         { expiresIn: '7d' }
       );
 
+      // Environment-based cookie behavior
       const isProd =
         process.env.NODE_ENV === 'production' ||
-        String(process.env.BACKEND_URL || '').startsWith('https://');
+        (process.env.BACKEND_URL || '').startsWith('https://');
 
+      // Set Cookie for authentication
       res.cookie('jwt', token, {
         httpOnly: true,
         sameSite: isProd ? 'none' : 'lax',
@@ -57,21 +74,23 @@ router.get(
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
-      // ✅ Redirect to dynamic frontend URL
+      // 🔥 FINAL REDIRECT AFTER SUCCESSFUL GOOGLE LOGIN
+      // Sends the user to frontend with success page
       return res.redirect(`${FRONTEND_URL}/auth/success`);
     } catch (e) {
+      console.error("Google login error:", e);
       return res.redirect(`${FRONTEND_URL}/auth/failure`);
     }
   }
 );
 
+// Logout
 router.post('/logout', (req, res) => {
   res.clearCookie('jwt', {
     httpOnly: true,
     sameSite: 'lax',
     secure: false,
   });
-  // Best-effort clear for prod cookie flags too
   res.clearCookie('jwt', {
     httpOnly: true,
     sameSite: 'none',

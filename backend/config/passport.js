@@ -11,7 +11,7 @@ export function setupPassport() {
 
   const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
   const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
-  const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
+  const callbackURL = process.env.GOOGLE_CALLBACK_URL || "http://localhost:5000/api/auth/google/callback";
 
   if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
     console.warn('[passport] Missing GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET');
@@ -22,7 +22,7 @@ export function setupPassport() {
       {
         clientID: GOOGLE_CLIENT_ID || '',
         clientSecret: GOOGLE_CLIENT_SECRET || '',
-        callbackURL: `${BACKEND_URL}/api/auth/google/callback`,
+        callbackURL: callbackURL,
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
