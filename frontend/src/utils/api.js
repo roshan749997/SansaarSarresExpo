@@ -33,7 +33,9 @@ async function request(path, options = {}) {
     headers['Content-Type'] = headers['Content-Type'] ?? 'application/json';
   }
 
-  if (!isCookieSession && token) {
+  // Only add Authorization header if not already set in options.headers
+  // This allows api.me() to explicitly set it for email/password login
+  if (!isCookieSession && token && !headers.Authorization) {
     headers.Authorization = `Bearer ${token}`;
   }
 
@@ -90,10 +92,51 @@ export const api = {
   me: async () => {
     try {
       // Use credentials: 'include' to send cookies for Google OAuth
-      return await request('/api/me', { method: 'GET', credentials: 'include' });
+      // Also send Authorization header if token exists (for email/password login)
+      const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+      const isCookieSession = token === 'cookie';
+      
+      console.log('[api.me] Token check:', { 
+        hasToken: !!token, 
+        isCookieSession, 
+        tokenPreview: token ? token.substring(0, 20) + '...' : 'none' 
+      });
+      
+      const options = {
+        method: 'GET',
+        credentials: 'include', // Always include credentials for cookies
+      };
+      
+      // If not cookie session, explicitly add Authorization header
+      // This will be preserved by request() function since we check !headers.Authorization
+      if (!isCookieSession && token) {
+        options.headers = {
+          Authorization: `Bearer ${token}`,
+        };
+        console.log('[api.me] Added Authorization header for email/password login');
+      }
+      
+      const result = await request('/api/me', options);
+      console.log('[api.me] Success, user data:', result?.user ? 'received' : 'missing');
+      return result;
     } catch (e) {
+      console.error('api.me() error:', e);
       // Fallback for older APIs
-      return await request('/api/auth/me', { method: 'GET', credentials: 'include' });
+      const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+      const isCookieSession = token === 'cookie';
+      
+      const options = {
+        method: 'GET',
+        credentials: 'include',
+      };
+      
+      if (!isCookieSession && token) {
+        options.headers = {
+          Authorization: `Bearer ${token}`,
+        };
+      }
+      
+      return await request('/api/auth/me', options);
     }
   },
 

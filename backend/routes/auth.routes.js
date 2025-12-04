@@ -21,7 +21,7 @@ router.post('/verify-otp', verifyOtp);
 // Get current user profile
 router.get('/me', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.userId).select('name email isAdmin createdAt updatedAt');
+    const user = await User.findById(req.userId).select('name email phone isAdmin googleId avatar provider createdAt updatedAt');
     if (!user) return res.status(404).json({ message: 'User not found' });
     res.json({ user });
   } catch (e) {

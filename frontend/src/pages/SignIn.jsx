@@ -48,8 +48,24 @@ const SignIn = () => {
 
     try {
       const resp = await api.signin({ email: formData.email, password: formData.password });
+      
+      // Clear any existing cookies from Google/OTP login since we're using localStorage token
+      // This ensures email/password login uses Authorization header, not old cookies
+      try {
+        document.cookie.split(";").forEach((c) => {
+          document.cookie = c
+            .replace(/^ +/, "")
+            .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+        });
+      } catch (e) {
+        console.warn('Failed to clear cookies:', e);
+      }
+      
       // Store token then redirect to intended page or home
-      if (resp?.token) localStorage.setItem('auth_token', resp.token);
+      if (resp?.token) {
+        localStorage.setItem('auth_token', resp.token);
+        console.log('[Email Login] Token stored in localStorage');
+      }
       if (resp?.user?.isAdmin) {
         localStorage.setItem('auth_is_admin', 'true');
       } else {
@@ -130,8 +146,22 @@ const SignIn = () => {
         throw new Error(data?.message || 'Invalid OTP');
       }
       
+      // Clear any existing cookies from Google login since OTP uses localStorage token
+      try {
+        document.cookie.split(";").forEach((c) => {
+          document.cookie = c
+            .replace(/^ +/, "")
+            .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+        });
+      } catch (e) {
+        console.warn('Failed to clear cookies:', e);
+      }
+      
       // Store token and redirect
-      if (data?.token) localStorage.setItem('auth_token', data.token);
+      if (data?.token) {
+        localStorage.setItem('auth_token', data.token);
+        console.log('[OTP Login] Token stored in localStorage');
+      }
       if (data?.user?.isAdmin) {
         localStorage.setItem('auth_is_admin', 'true');
       } else {

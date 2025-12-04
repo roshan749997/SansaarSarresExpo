@@ -50,21 +50,51 @@ export default function FlipkartAccountSettings() {
 
   const fetchUserData = async () => {
     try {
+      setLoading(true);
+      console.log('Fetching user data...');
       const userData = await api.me();
-      const [firstName, ...lastNameParts] = userData.user?.name?.split(' ') || [];
-      const lastName = lastNameParts.join(' ');
-      const adminStatus = localStorage.getItem('auth_is_admin') === 'true';
+      console.log('User data received:', userData);
+      
+      if (!userData || !userData.user) {
+        throw new Error('No user data received');
+      }
+      
+      // Handle name splitting - support all formats
+      const fullName = userData.user?.name || '';
+      const nameParts = fullName.trim().split(/\s+/);
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
+      
+      // Get admin status from response or localStorage
+      const adminStatus = userData.user?.isAdmin || localStorage.getItem('auth_is_admin') === 'true';
+      
+      console.log('Setting user data:', {
+        name: fullName,
+        firstName,
+        lastName,
+        email: userData.user?.email,
+        phone: userData.user?.phone,
+        provider: userData.user?.provider
+      });
       
       setUser({
-        firstName: firstName || '',
-        lastName: lastName || '',
+        firstName: firstName,
+        lastName: lastName,
         email: userData.user?.email || '',
         mobile: userData.user?.phone || '',
-        gender: userData.user?.gender || 'male'
+        gender: 'male' // Default, not stored in User model
       });
       setIsAdmin(adminStatus);
     } catch (error) {
       console.error('Error fetching user data:', error);
+      console.error('Error details:', {
+        message: error.message,
+        status: error.status,
+        response: error.response
+      });
+      // Show error to user
+      alert('Failed to load profile. Please try logging in again.');
+      navigate('/signin');
     } finally {
       setLoading(false);
     }
@@ -192,11 +222,11 @@ export default function FlipkartAccountSettings() {
           <div className="lg:hidden bg-white shadow-md px-4 py-4 flex items-center justify-between sticky z-40" style={{ top: 'var(--app-header-height, 0px)' }}>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#800020] to-[#a0002a] flex items-center justify-center text-white text-lg font-bold shadow-lg">
-                {user.firstName.charAt(0)}
+                {(user.firstName || user.email || user.mobile || 'U').charAt(0).toUpperCase()}
               </div>
               <div>
                 <div className="text-xs text-gray-500">Hello,</div>
-                <div className="font-semibold text-gray-800">{user.firstName}</div>
+                <div className="font-semibold text-gray-800">{user.firstName || user.email || user.mobile || 'User'}</div>
               </div>
             </div>
             <button 
@@ -233,11 +263,13 @@ export default function FlipkartAccountSettings() {
             <div className="hidden lg:block p-6 border-b bg-gradient-to-r from-gray-50 to-gray-100">
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#800020] to-[#a0002a] flex items-center justify-center text-white text-2xl font-bold shadow-lg ring-4 ring-red-100">
-                  {user.firstName.charAt(0)}
+                  {(user.firstName || user.email || user.mobile || 'U').charAt(0).toUpperCase()}
                 </div>
                 <div>
                   <div className="text-xs text-gray-600 font-medium">Hello,</div>
-                  <div className="font-bold text-gray-800 text-lg">{user.firstName} {user.lastName}</div>
+                  <div className="font-bold text-gray-800 text-lg">
+                    {user.firstName || user.email || user.mobile || 'User'} {user.lastName}
+                  </div>
                 </div>
               </div>
             </div>
