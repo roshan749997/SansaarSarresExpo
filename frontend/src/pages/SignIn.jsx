@@ -1,34 +1,115 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { api } from '../utils/api';
 
 const SignIn = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
+  const [step, setStep] = useState(1); // 1: Mobile input, 2: OTP input
+  const [mobile, setMobile] = useState('');
+  const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [resendTimer, setResendTimer] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleSubmit = async (e) => {
+  // Resend OTP timer countdown
+  useEffect(() => {
+    if (resendTimer > 0) {
+      const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [resendTimer]);
+
+  const handleMobileChange = (e) => {
+    const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+    setMobile(value);
+  };
+
+  const handleOtpChange = (e) => {
+    const value = e.target.value.replace(/\D/g, '').slice(0, 6);
+    setOtp(value);
+  };
+
+  const handleSendOtp = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
-    setLoading(true);
+    
+    if (mobile.length !== 10) {
+      setError('Please enter a valid 10-digit mobile number');
+      return;
+    }
 
+    setLoading(true);
     try {
-      const resp = await api.signin({ email: formData.email, password: formData.password });
-      // store token then redirect to intended page or home
-      if (resp?.token) localStorage.setItem('auth_token', resp.token);
-      if (resp?.user?.isAdmin) {
+      const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+      const response = await fetch(`${API_BASE_URL}/api/auth/send-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mobile }),
+        credentials: 'include',
+      });
+      
+      let data;
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        const text = await response.text();
+        throw new Error(`Server error: ${response.status} ${response.statusText}`);
+      }
+      
+      if (!response.ok || !data.success) {
+        throw new Error(data?.message || 'Failed to send OTP');
+      }
+      
+      setSuccess('OTP sent to your mobile number');
+      setStep(2);
+      setResendTimer(30);
+    } catch (err) {
+      setError(err.message || 'Failed to send OTP');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+    
+    if (otp.length !== 6) {
+      setError('Please enter a valid 6-digit OTP');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+      const response = await fetch(`${API_BASE_URL}/api/auth/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mobile, otp }),
+        credentials: 'include',
+      });
+      
+      let data;
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        const text = await response.text();
+        throw new Error(`Server error: ${response.status} ${response.statusText}`);
+      }
+      
+      if (!response.ok || !data.success) {
+        throw new Error(data?.message || 'Invalid OTP');
+      }
+      
+      // Store token and redirect
+      if (data?.token) localStorage.setItem('auth_token', data.token);
+      if (data?.user?.isAdmin) {
         localStorage.setItem('auth_is_admin', 'true');
       } else {
         try { localStorage.removeItem('auth_is_admin'); } catch { }
@@ -36,10 +117,55 @@ const SignIn = () => {
       const redirectTo = location.state?.from?.pathname || '/';
       navigate(redirectTo, { replace: true });
     } catch (err) {
-      setError(err.message || 'Failed to sign in');
+      setError(err.message || 'Invalid OTP. Please try again.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleResendOtp = async () => {
+    if (resendTimer > 0) return;
+    
+    setError('');
+    setLoading(true);
+    try {
+      const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+      const response = await fetch(`${API_BASE_URL}/api/auth/send-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mobile }),
+        credentials: 'include',
+      });
+      
+      let data;
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        const text = await response.text();
+        throw new Error(`Server error: ${response.status} ${response.statusText}`);
+      }
+      
+      if (!response.ok || !data.success) {
+        throw new Error(data?.message || 'Failed to resend OTP');
+      }
+      
+      setSuccess('OTP resent to your mobile number');
+      setResendTimer(30);
+      setOtp('');
+    } catch (err) {
+      setError(err.message || 'Failed to resend OTP');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChangeMobile = () => {
+    setStep(1);
+    setOtp('');
+    setError('');
+    setSuccess('');
+    setResendTimer(0);
   };
 
   return (
@@ -85,70 +211,101 @@ const SignIn = () => {
             <div className="bg-white rounded-2xl shadow-lg p-6 border border-neutral-100">
               {error && (<div className="mb-4 text-sm text-red-600">{error}</div>)}
               {success && (<div className="mb-4 text-sm text-green-600">{success}</div>)}
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-neutral-700 mb-2">
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-3 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent transition-all"
-                    placeholder="Enter your email"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-neutral-700 mb-2">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-3 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent transition-all"
-                    placeholder="Enter your password"
-                  />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <label className="flex items-center">
+              
+              {step === 1 ? (
+                <form onSubmit={handleSendOtp} className="space-y-4">
+                  <div>
+                    <label htmlFor="mobile" className="block text-sm font-medium text-neutral-700 mb-2">
+                      Mobile Number
+                    </label>
                     <input
-                      type="checkbox"
-                      className="h-4 w-4 text-rose-500 focus:ring-rose-400 border-neutral-300 rounded"
+                      type="tel"
+                      id="mobile"
+                      name="mobile"
+                      value={mobile}
+                      onChange={handleMobileChange}
+                      required
+                      maxLength={10}
+                      className="w-full px-3 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent transition-all"
+                      placeholder="Enter your 10-digit mobile number"
                     />
-                    <span className="ml-2 text-sm text-gray-600">Remember me</span>
-                  </label>
-                  <Link
-                    to="/forgot-password"
-                    className="text-sm text-rose-500 hover:text-rose-600 transition-colors"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
+                  </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-gradient-to-r from-rose-500 to-rose-600 text-white py-2 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-60"
-                >
-                  {loading ? 'Signing In...' : 'Sign In'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigate(location.state?.from?.pathname || '/')}
-                  className="w-full mt-2 border border-neutral-200 text-neutral-700 py-2 rounded-lg font-semibold hover:bg-neutral-50 transition-all duration-300"
-                >
-                  Continue as Guest
-                </button>
-              </form>
+                  <button
+                    type="submit"
+                    disabled={loading || mobile.length !== 10}
+                    className="w-full bg-gradient-to-r from-rose-500 to-rose-600 text-white py-2 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-60"
+                  >
+                    {loading ? 'Sending OTP...' : 'Send OTP'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => navigate(location.state?.from?.pathname || '/')}
+                    className="w-full mt-2 border border-neutral-200 text-neutral-700 py-2 rounded-lg font-semibold hover:bg-neutral-50 transition-all duration-300"
+                  >
+                    Continue as Guest
+                  </button>
+                </form>
+              ) : (
+                <form onSubmit={handleVerifyOtp} className="space-y-4">
+                  <div>
+                    <label htmlFor="otp" className="block text-sm font-medium text-neutral-700 mb-2">
+                      Enter OTP
+                    </label>
+                    <input
+                      type="text"
+                      id="otp"
+                      name="otp"
+                      value={otp}
+                      onChange={handleOtpChange}
+                      required
+                      maxLength={6}
+                      className="w-full px-3 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent transition-all text-center text-lg tracking-widest"
+                      placeholder="000000"
+                    />
+                  </div>
+
+                  <div className="text-center">
+                    {resendTimer > 0 ? (
+                      <p className="text-sm text-gray-600">
+                        Resend OTP in {resendTimer} sec
+                      </p>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleResendOtp}
+                        disabled={loading}
+                        className="text-sm text-rose-500 hover:text-rose-600 transition-colors disabled:opacity-50"
+                      >
+                        Resend OTP
+                      </button>
+                    )}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleChangeMobile}
+                    className="w-full text-sm text-gray-600 hover:text-gray-800 transition-colors"
+                  >
+                    Change mobile number
+                  </button>
+
+                  <button
+                    type="submit"
+                    disabled={loading || otp.length !== 6}
+                    className="w-full bg-gradient-to-r from-rose-500 to-rose-600 text-white py-2 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-60"
+                  >
+                    {loading ? 'Verifying...' : 'Verify OTP'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => navigate(location.state?.from?.pathname || '/')}
+                    className="w-full mt-2 border border-neutral-200 text-neutral-700 py-2 rounded-lg font-semibold hover:bg-neutral-50 transition-all duration-300"
+                  >
+                    Continue as Guest
+                  </button>
+                </form>
+              )}
 
               {/* Divider */}
               <div className="mt-6 mb-4">
