@@ -6,7 +6,7 @@ const getBackendUrl = () => {
   return import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 };
 
-const API_URL = `${getBackendUrl()}/api`;
+const API_URL = `${getBackendUrl()}`;
 
 // const API_URL = 'https://api.saarisanskar.in/api';
 
