@@ -14,7 +14,7 @@ const Home = () => {
             alt: 'SareeSansaar - Premium Saree Collection',
           },
           {
-            desktop: 'https://res.cloudinary.com/duc9svg7w/image/upload/v1762255943/Green_and_Gold_Traditional_Fashion_Sale_Presentation_20251101_013751_0000_jy3n3g.png',
+            desktop: 'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766059379/Red_And_Orange_Elegant_Collection_Launch_Banner_2048_x_594_px_hvcjpp.png',
             alt: 'Festive Offer - SareeSansaar',
           },
         ]}
