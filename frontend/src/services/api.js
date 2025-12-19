@@ -6,7 +6,7 @@ const getBackendUrl = () => {
   return import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 };
 
-const API_URL = `${getBackendUrl()}`;
+const API_URL = `${getBackendUrl()}/api`;
 
 // const API_URL = 'https://api.saarisanskar.in/api';
 
@@ -180,6 +180,21 @@ export const createCodOrder = async () => {
   const data = await res.json();
   console.log('[createCodOrder] Success:', data);
   return data;
+};
+
+// New Payment Gateway functions
+export const createPaymentGatewayOrder = async (orderId, amount, name, email, phone) => {
+  const res = await fetch(`${API_URL}/payment/create`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...authHeaders() },
+    body: JSON.stringify({ orderId, amount, name, email, phone }),
+    credentials: "include",
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.error || 'Failed to create payment gateway order');
+  }
+  return res.json();
 };
 
 

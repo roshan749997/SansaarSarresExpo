@@ -1,7 +1,8 @@
 import React, { useState, useContext, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { getMyAddress, saveMyAddress, deleteAddressById, createPaymentOrder, verifyPayment, createCodOrder } from '../services/api';
+import { getMyAddress, saveMyAddress, deleteAddressById, createPaymentOrder, verifyPayment, createCodOrder, createPaymentGatewayOrder } from '../services/api';
+import { api } from '../utils/api';
 
 const indianStates = [
   'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
@@ -65,8 +66,9 @@ export default function AddressForm() {
 
   const [showSuccess, setShowSuccess] = useState(false);
   const [showForm, setShowForm] = useState(true);
-  const [paymentMethod, setPaymentMethod] = useState('razorpay'); // 'razorpay' or 'cod'
+  const [paymentMethod, setPaymentMethod] = useState('razorpay'); // 'razorpay', 'cod', or 'pg'
   const [processingOrder, setProcessingOrder] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
   const { cart, cartTotal: total, loadCart } = useCart();
 
   // Calculate price details
@@ -114,6 +116,33 @@ export default function AddressForm() {
         console.error('COD order error:', error);
         alert(error.message || 'Failed to place COD order. Please try again.');
       } finally {
+        setProcessingOrder(false);
+      }
+      return;
+    }
+
+    // Handle New Payment Gateway
+    if (paymentMethod === 'pg') {
+      try {
+        setProcessingOrder(true);
+        const orderId = `ORD_${Date.now()}`;
+        const amount = priceDetails.total;
+        const result = await createPaymentGatewayOrder(
+          orderId,
+          amount,
+          formData.name || '',
+          userEmail || '', // Use user email from profile
+          formData.mobile || ''
+        );
+        if (result && result.redirectUrl) {
+          window.location.href = result.redirectUrl;
+        } else {
+          alert('Failed to initiate payment. Please try again.');
+          setProcessingOrder(false);
+        }
+      } catch (error) {
+        console.error('Payment Gateway error:', error);
+        alert(error.message || 'Failed to initiate payment. Please try again.');
         setProcessingOrder(false);
       }
       return;
@@ -287,11 +316,23 @@ export default function AddressForm() {
     console.log('Cancel clicked');
   };
 
-  // Load existing address on mount
+  // Load existing address and user email on mount
   useEffect(() => {
     const load = async () => {
       try {
         setLoadingAddress(true);
+        
+        // Load user email
+        try {
+          const userData = await api.me();
+          if (userData?.user?.email) {
+            setUserEmail(userData.user.email);
+          }
+        } catch (e) {
+          console.error('Failed to load user email:', e);
+        }
+        
+        // Load address
         const doc = await getMyAddress();
         if (doc && doc._id) {
           setAddressId(doc._id);
@@ -730,8 +771,22 @@ export default function AddressForm() {
                       className="w-4 h-4 text-[#800020] focus:ring-[#800020]"
                     />
                     <div className="flex-1">
-                      <span className="text-sm font-medium text-gray-900">Online Payment</span>
+                      <span className="text-sm font-medium text-gray-900">Online Payment (Razorpay)</span>
                       <p className="text-xs text-gray-500">Pay securely with Razorpay</p>
+                    </div>
+                  </label>
+                  <label className="flex items-center gap-3 p-3 border rounded cursor-pointer hover:bg-gray-50 transition-colors">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="pg"
+                      checked={paymentMethod === 'pg'}
+                      onChange={(e) => setPaymentMethod(e.target.value)}
+                      className="w-4 h-4 text-[#800020] focus:ring-[#800020]"
+                    />
+                    <div className="flex-1">
+                      <span className="text-sm font-medium text-gray-900">Online Payment (Gateway)</span>
+                      <p className="text-xs text-gray-500">Pay securely with Payment Gateway</p>
                     </div>
                   </label>
                   <label className="flex items-center gap-3 p-3 border rounded cursor-pointer hover:bg-gray-50 transition-colors">

@@ -135,8 +135,10 @@ export default function FlipkartAccountSettings() {
       try {
         setLoadingOrders(true);
         const data = await getMyOrders();
+        console.log('[Profile] Orders loaded:', data);
         setOrders(Array.isArray(data) ? data : []);
       } catch (e) {
+        console.error('[Profile] Error loading orders:', e);
         setOrders([]);
       } finally {
         setLoadingOrders(false);
@@ -149,8 +151,10 @@ export default function FlipkartAccountSettings() {
     try {
       setLoadingOrders(true);
       const data = await getMyOrders();
+      console.log('[Profile] Orders refreshed:', data);
       setOrders(Array.isArray(data) ? data : []);
     } catch (e) {
+      console.error('[Profile] Error refreshing orders:', e);
       setOrders([]);
     } finally {
       setLoadingOrders(false);

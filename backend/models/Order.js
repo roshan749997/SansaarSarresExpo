@@ -32,10 +32,16 @@ const OrderSchema = new mongoose.Schema(
     amount: { type: Number, required: true },
     currency: { type: String, default: 'INR' },
     status: { type: String, enum: ['created', 'paid', 'pending', 'failed', 'cancelled'], default: 'paid' },
-    paymentMethod: { type: String, enum: ['razorpay', 'cod'], default: 'razorpay' },
+    paymentMethod: { type: String, enum: ['razorpay', 'cod', 'pg'], default: 'razorpay' },
+    // Razorpay fields
     razorpayOrderId: { type: String },
     razorpayPaymentId: { type: String },
     razorpaySignature: { type: String },
+    // New Payment Gateway fields
+    pgOrderId: { type: String },
+    pgTransactionId: { type: String },
+    pgResponseCode: { type: String },
+    pgRawResponse: { type: mongoose.Schema.Types.Mixed },
     shippingAddress: { type: ShippingAddressSchema },
   },
   { timestamps: true }
